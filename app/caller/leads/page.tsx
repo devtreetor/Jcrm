@@ -83,22 +83,63 @@ export default function CallerLeadsPage() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1 },
-  title: { fontSize: 22, fontWeight: '700', color: '#f8fafc', marginBottom: 12 },
-  errorBox: { backgroundColor: 'rgba(239,68,68,0.1)', borderRadius: 8, padding: 12, margin: 16 },
-  errorText: { color: '#ef4444', fontSize: 14 },
+  container: { flex: 1, backgroundColor: '#0b1120', padding: 20 },
+  title: { 
+    fontSize: 24, 
+    fontWeight: '800', 
+    color: '#f8fafc', 
+    marginBottom: 20,
+    fontFamily: 'Montserrat'
+  },
+  errorBox: { 
+    backgroundColor: 'rgba(226,78,89,0.1)', 
+    borderRadius: 12, 
+    padding: 16, 
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(226,78,89,0.2)',
+  },
+  errorText: { color: '#E24E59', fontSize: 14, fontFamily: 'Poppins' },
   emptyState: { alignItems: 'center', justifyContent: 'center', paddingTop: 80 },
-  emptyIcon: { fontSize: 48, marginBottom: 12 },
-  emptyTitle: { fontSize: 18, fontWeight: '600', color: '#f8fafc', marginBottom: 4 },
-  emptyMessage: { fontSize: 14, color: '#94a3b8' },
-  listContent: { paddingBottom: 16 },
+  emptyIcon: { fontSize: 48, marginBottom: 16 },
+  emptyTitle: { 
+    fontSize: 20, 
+    fontWeight: '700', 
+    color: '#f8fafc', 
+    marginBottom: 8,
+    fontFamily: 'Montserrat'
+  },
+  emptyMessage: { 
+    fontSize: 15, 
+    color: '#94a3b8', 
+    textAlign: 'center',
+    fontFamily: 'Poppins'
+  },
+  listContent: { paddingBottom: 24 },
   leadCard: {
-    flexDirection: 'row', alignItems: 'center', backgroundColor: '#1e293b',
-    borderRadius: 10, padding: 14, marginBottom: 8, gap: 12,
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    backgroundColor: '#171f2f',
+    borderRadius: 20, 
+    padding: 18, 
+    marginBottom: 12, 
+    gap: 14,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.05)',
   },
   leadInfo: { flex: 1 },
-  schoolName: { fontSize: 15, fontWeight: '600', color: '#f8fafc' },
-  leadMeta: { fontSize: 12, color: '#94a3b8', marginTop: 2 },
-  stagePill: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: 12 },
-  stagePillText: { fontSize: 11, fontWeight: '600' },
+  schoolName: { 
+    fontSize: 17, 
+    fontWeight: '700', 
+    color: '#f8fafc',
+    fontFamily: 'Poppins'
+  },
+  leadMeta: { 
+    fontSize: 13, 
+    color: '#94a3b8', 
+    marginTop: 4,
+    fontFamily: 'Poppins'
+  },
+  stagePill: { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 10 },
+  stagePillText: { fontSize: 12, fontWeight: '700', fontFamily: 'Poppins' },
 });

@@ -60,10 +60,11 @@ export default function LoginPage() {
     <View style={styles.container}>
       <View style={styles.card}>
         <View style={styles.logoContainer}>
-          <Text style={styles.logoText}>J</Text>
+          <Text style={styles.logoJ}>J!</Text>
+          <Text style={styles.logoText}>gyasu</Text>
         </View>
-        <Text style={styles.title}>Jiyasu Sales</Text>
-        <Text style={styles.subtitle}>Sign in to your account</Text>
+        <Text style={styles.title}>Welcome Back</Text>
+        <Text style={styles.subtitle}>Sign in to continue to Jigyasu</Text>
 
         {error ? (
           <View style={styles.errorContainer}>
@@ -121,94 +122,111 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     minHeight: '100vh' as unknown as number,
     padding: 16,
-    backgroundColor: '#0f172a',
+    backgroundColor: '#0b1120', // Deep Navy
   },
   card: {
     width: '100%',
-    maxWidth: 400,
-    padding: 32,
-    backgroundColor: '#1e293b',
-    borderRadius: 16,
+    maxWidth: 420,
+    padding: 40,
+    backgroundColor: 'rgba(23, 31, 47, 0.8)', // Glassmorphism
+    borderRadius: 24,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.1)',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.3,
-    shadowRadius: 24,
-    elevation: 8,
+    shadowOffset: { width: 0, height: 12 },
+    shadowOpacity: 0.4,
+    shadowRadius: 32,
+    elevation: 12,
   },
   logoContainer: {
-    width: 64,
-    height: 64,
-    borderRadius: 16,
-    backgroundColor: '#2563eb',
+    flexDirection: 'row',
     justifyContent: 'center',
-    alignItems: 'center',
-    alignSelf: 'center',
-    marginBottom: 24,
+    alignItems: 'baseline',
+    marginBottom: 32,
+  },
+  logoJ: {
+    fontSize: 42,
+    fontWeight: '800',
+    color: '#E24E59', // Jigyasu Red
+    fontFamily: 'Montserrat',
   },
   logoText: {
-    fontSize: 28,
-    fontWeight: '800',
-    color: '#ffffff',
+    fontSize: 36,
+    fontWeight: '700',
+    color: '#f8fafc',
+    fontFamily: 'Montserrat',
+    marginLeft: -2,
   },
   title: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: '700',
     color: '#f8fafc',
     textAlign: 'center',
-    marginBottom: 4,
+    marginBottom: 8,
+    fontFamily: 'Montserrat',
   },
   subtitle: {
-    fontSize: 14,
+    fontSize: 16,
     color: '#94a3b8',
     textAlign: 'center',
-    marginBottom: 32,
+    marginBottom: 40,
+    fontFamily: 'Poppins',
   },
   errorContainer: {
-    backgroundColor: 'rgba(239, 68, 68, 0.1)',
+    backgroundColor: 'rgba(226, 78, 89, 0.1)',
     borderWidth: 1,
-    borderColor: 'rgba(239, 68, 68, 0.3)',
-    borderRadius: 8,
-    padding: 12,
-    marginBottom: 16,
+    borderColor: 'rgba(226, 78, 89, 0.3)',
+    borderRadius: 12,
+    padding: 14,
+    marginBottom: 20,
   },
   errorText: {
-    color: '#ef4444',
+    color: '#E24E59',
     fontSize: 14,
     textAlign: 'center',
+    fontFamily: 'Poppins',
   },
   inputGroup: {
-    marginBottom: 20,
+    marginBottom: 24,
   },
   label: {
     fontSize: 14,
-    fontWeight: '500',
+    fontWeight: '600',
     color: '#cbd5e1',
-    marginBottom: 6,
+    marginBottom: 8,
+    fontFamily: 'Poppins',
   },
   input: {
-    height: 48,
+    height: 54,
     borderWidth: 1,
-    borderColor: '#334155',
-    borderRadius: 10,
-    paddingHorizontal: 16,
+    borderColor: 'rgba(255, 255, 255, 0.1)',
+    borderRadius: 14,
+    paddingHorizontal: 20,
     fontSize: 16,
     color: '#f8fafc',
-    backgroundColor: '#0f172a',
+    backgroundColor: 'rgba(15, 23, 42, 0.5)',
+    fontFamily: 'Poppins',
   },
   button: {
-    height: 48,
-    backgroundColor: '#2563eb',
-    borderRadius: 10,
+    height: 56,
+    backgroundColor: '#E24E59',
+    borderRadius: 14,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 8,
+    marginTop: 12,
+    shadowColor: '#E24E59',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
   },
   buttonDisabled: {
     opacity: 0.6,
+    backgroundColor: '#94a3b8',
   },
   buttonText: {
-    fontSize: 16,
-    fontWeight: '600',
+    fontSize: 18,
+    fontWeight: '700',
     color: '#ffffff',
+    fontFamily: 'Poppins',
   },
 });

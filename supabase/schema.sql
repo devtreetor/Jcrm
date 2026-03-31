@@ -1,4 +1,4 @@
--- Jiyasu Sales App — Database Schema
+-- Jigyasu Sales App — Database Schema
 -- Run this SQL in Supabase SQL editor to create all tables.
 
 -- USERS

@@ -1,4 +1,4 @@
--- Jiyasu Sales App — Database Schema
+-- Jigyasu Sales App — Database Schema
 -- Run this SQL in Supabase SQL editor to create all tables.
 
 -- USERS
@@ -91,7 +91,7 @@ create trigger leads_updated_at
   before update on public.leads
   for each row execute function update_updated_at();
 
--- Jiyasu Sales App — Row Level Security Policies
+-- Jigyasu Sales App — Row Level Security Policies
 -- Run this SQL after schema.sql in Supabase SQL editor.
 
 -- USERS table

@@ -10,8 +10,41 @@ import type { InsightsData, InsightsRange } from '@/types/team.types';
 const RANGE_OPTIONS: { label: string; value: InsightsRange }[] = [
   { label: 'Today', value: 'day' },
   { label: 'This Month', value: 'month' },
-  { label: 'Last 6 Months', value: '6m' },
+  { label: '6 Months', value: '6m' },
 ];
+
+const StageChart = ({ data }: { data: InsightsData }) => {
+  const stages = [
+    { label: 'Demos', value: data.demos_booked, color: '#E24E59' },
+    { label: 'MQL', value: data.mqls, color: '#1270E3' },
+    { label: 'Proposal', value: data.proposals_sent, color: '#F8DE6F' },
+    { label: 'Won', value: data.won, color: '#22c55e' },
+    { label: 'Lost', value: data.lost, color: '#94a3b8' },
+  ];
+  
+  const max = Math.max(...stages.map(s => s.value), 1);
+  
+  return (
+    <View style={chartStyles.container}>
+      <Text style={chartStyles.title}>Stage Distribution</Text>
+      <View style={chartStyles.barContainer}>
+        {stages.map((s, i) => (
+          <View key={i} style={chartStyles.barWrapper}>
+            <View style={chartStyles.barBackground}>
+              <View 
+                style={[
+                  chartStyles.barFill, 
+                  { height: `${(s.value / max) * 100}%`, backgroundColor: s.color }
+                ]} 
+              />
+            </View>
+            <Text style={chartStyles.barLabel}>{s.label}</Text>
+          </View>
+        ))}
+      </View>
+    </View>
+  );
+};
 
 export default function AdminDashboard() {
   const router = useRouter();
@@ -47,12 +80,12 @@ export default function AdminDashboard() {
 
   const statCards = insights
     ? [
-        { label: 'Total Calls', value: insights.total_calls, color: '#60a5fa' },
-        { label: STAGE_LABELS.demo_booked, value: insights.demos_booked, color: STAGE_COLORS.demo_booked },
-        { label: STAGE_LABELS.mql, value: insights.mqls, color: STAGE_COLORS.mql },
-        { label: STAGE_LABELS.proposal_sent, value: insights.proposals_sent, color: STAGE_COLORS.proposal_sent },
-        { label: STAGE_LABELS.won, value: insights.won, color: STAGE_COLORS.won },
-        { label: STAGE_LABELS.lost, value: insights.lost, color: STAGE_COLORS.lost },
+        { label: 'Calls', value: insights.total_calls, color: '#1270E3' },
+        { label: 'Demos', value: insights.demos_booked, color: '#E24E59' },
+        { label: 'MQL', value: insights.mqls, color: '#F8DE6F' },
+        { label: 'Proposal', value: insights.proposals_sent, color: '#a78bfa' },
+        { label: 'Won', value: insights.won, color: '#22c55e' },
+        { label: 'Lost', value: insights.lost, color: '#94a3b8' },
       ]
     : [];
 
@@ -81,17 +114,47 @@ export default function AdminDashboard() {
       ) : null}
 
       {loading ? (
-        <ActivityIndicator color="#60a5fa" size="large" style={styles.loader} />
-      ) : (
-        <View style={styles.grid}>
-          {statCards.map((card) => (
-            <View key={card.label} style={styles.statCard}>
-              <Text style={styles.statValue}>{card.value}</Text>
-              <Text style={[styles.statLabel, { color: card.color }]}>{card.label}</Text>
-            </View>
-          ))}
-        </View>
-      )}
+        <ActivityIndicator color="#E24E59" size="large" style={styles.loader} />
+      ) : insights ? (
+        <>
+          <View style={styles.grid}>
+            {statCards.map((card) => (
+              <View key={card.label} style={styles.statCard}>
+                 <View style={[styles.statIconBadge, { backgroundColor: `${card.color}22` }]}>
+                    <Text style={{ color: card.color }}>●</Text>
+                 </View>
+                <Text style={styles.statValue}>{card.value}</Text>
+                <Text style={styles.statLabel}>{card.label}</Text>
+              </View>
+            ))}
+          </View>
+          
+          <StageChart data={insights} />
+          
+          <View style={chartStyles.container}>
+            <Text style={chartStyles.title}>Growth Trend (Mocked)</Text>
+            <svg width="100%" height="150" viewBox="0 0 400 150" style={{ marginTop: 10 }}>
+              <defs>
+                <linearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stopColor="#E24E59" stopOpacity="0.4" />
+                  <stop offset="100%" stopColor="#E24E59" stopOpacity="0" />
+                </linearGradient>
+              </defs>
+              <path 
+                d="M 20,120 Q 80,100 120,60 T 220,80 T 320,30 T 380,50" 
+                fill="transparent" 
+                stroke="#E24E59" 
+                strokeWidth="4" 
+                strokeLinecap="round" 
+              />
+              <path 
+                d="M 20,120 Q 80,100 120,60 T 220,80 T 320,30 T 380,50 L 380,150 L 20,150 Z" 
+                fill="url(#gradient)" 
+              />
+            </svg>
+          </View>
+        </>
+      ) : null}
 
       <View style={styles.quickActions}>
         <Text style={styles.sectionTitle}>Quick Actions</Text>
@@ -112,28 +175,89 @@ export default function AdminDashboard() {
   );
 }
 
-const styles = StyleSheet.create({
-  scroll: { flex: 1 },
-  scrollContent: { paddingBottom: 32 },
-  title: { fontSize: 24, fontWeight: '700', color: '#f8fafc', marginBottom: 16 },
-  rangeRow: { flexDirection: 'row', marginBottom: 20 },
-  rangePill: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
+const chartStyles = StyleSheet.create({
+  container: {
+    backgroundColor: '#171f2f',
     borderRadius: 20,
-    backgroundColor: '#1e293b',
-    marginRight: 8,
+    padding: 20,
+    marginBottom: 24,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.05)',
   },
-  rangePillActive: { backgroundColor: '#2563eb' },
-  rangePillText: { fontSize: 13, color: '#94a3b8', fontWeight: '500' },
+  title: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#f8fafc',
+    marginBottom: 20,
+    fontFamily: 'Montserrat',
+  },
+  barContainer: {
+    flexDirection: 'row',
+    height: 180,
+    alignItems: 'flex-end',
+    justifyContent: 'space-between',
+    paddingHorizontal: 10,
+  },
+  barWrapper: {
+    alignItems: 'center',
+    width: '18%',
+  },
+  barBackground: {
+    width: 12,
+    height: '100%',
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    borderRadius: 6,
+    justifyContent: 'flex-end',
+    overflow: 'hidden',
+  },
+  barFill: {
+    width: '100%',
+    borderRadius: 6,
+  },
+  barLabel: {
+    fontSize: 10,
+    color: '#94a3b8',
+    marginTop: 8,
+    fontFamily: 'Poppins',
+    textAlign: 'center',
+  },
+});
+
+const styles = StyleSheet.create({
+  scroll: { flex: 1, backgroundColor: '#0b1120' },
+  scrollContent: { padding: 20, paddingBottom: 40 },
+  title: { 
+    fontSize: 28, 
+    fontWeight: '800', 
+    color: '#f8fafc', 
+    marginBottom: 24,
+    fontFamily: 'Montserrat',
+  },
+  rangeRow: { flexDirection: 'row', marginBottom: 24 },
+  rangePill: {
+    paddingHorizontal: 18,
+    paddingVertical: 10,
+    borderRadius: 14,
+    backgroundColor: '#171f2f',
+    marginRight: 10,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.1)',
+  },
+  rangePillActive: { 
+    backgroundColor: '#E24E59',
+    borderColor: '#E24E59',
+  },
+  rangePillText: { fontSize: 13, color: '#94a3b8', fontWeight: '600', fontFamily: 'Poppins' },
   rangePillTextActive: { color: '#ffffff' },
   errorBox: {
-    backgroundColor: 'rgba(239,68,68,0.1)',
-    borderRadius: 8,
-    padding: 12,
-    marginBottom: 16,
+    backgroundColor: 'rgba(226,78,89,0.1)',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(226,78,89,0.2)',
   },
-  errorText: { color: '#ef4444', fontSize: 14 },
+  errorText: { color: '#E24E59', fontSize: 14, fontFamily: 'Poppins' },
   loader: { marginTop: 48 },
   grid: {
     flexDirection: 'row',
@@ -142,25 +266,53 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   statCard: {
-    width: '47%' as unknown as number,
-    backgroundColor: '#1e293b',
-    borderRadius: 12,
-    padding: 16,
-    alignItems: 'center',
+    width: '48%' as unknown as number,
+    backgroundColor: '#171f2f',
+    borderRadius: 20,
+    padding: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.05)',
   },
-  statValue: { fontSize: 32, fontWeight: '800', color: '#f8fafc', marginBottom: 4 },
-  statLabel: { fontSize: 13, fontWeight: '600' },
+  statIconBadge: {
+    width: 24,
+    height: 24,
+    borderRadius: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  statValue: { 
+    fontSize: 28, 
+    fontWeight: '800', 
+    color: '#f8fafc', 
+    marginBottom: 4,
+    fontFamily: 'Poppins' 
+  },
+  statLabel: { 
+    fontSize: 12, 
+    fontWeight: '600', 
+    color: '#94a3b8',
+    fontFamily: 'Poppins' 
+  },
   quickActions: { marginTop: 8 },
-  sectionTitle: { fontSize: 18, fontWeight: '600', color: '#f8fafc', marginBottom: 12 },
+  sectionTitle: { 
+    fontSize: 20, 
+    fontWeight: '700', 
+    color: '#f8fafc', 
+    marginBottom: 16,
+    fontFamily: 'Montserrat'
+  },
   actionBtn: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#1e293b',
-    borderRadius: 10,
-    padding: 14,
-    marginBottom: 8,
+    backgroundColor: '#171f2f',
+    borderRadius: 16,
+    padding: 18,
+    marginBottom: 10,
     gap: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.05)',
   },
-  actionIcon: { fontSize: 20 },
-  actionText: { fontSize: 15, color: '#cbd5e1', fontWeight: '500' },
+  actionIcon: { fontSize: 22 },
+  actionText: { fontSize: 16, color: '#f8fafc', fontWeight: '600', fontFamily: 'Poppins' },
 });

@@ -1,4 +1,4 @@
--- Jiyasu Sales App — Row Level Security Policies
+-- Jigyasu Sales App — Row Level Security Policies
 -- Run this SQL after schema.sql in Supabase SQL editor.
 
 -- USERS table

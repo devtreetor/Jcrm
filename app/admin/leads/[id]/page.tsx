@@ -160,18 +160,36 @@ export default function AdminLeadDetailPage() {
       {notice ? <View style={styles.noticeBox}><Text style={styles.noticeText}>{notice}</Text></View> : null}
 
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Contact</Text>
+        <Text style={styles.sectionTitle}>Contact Directory</Text>
         {lead.principal_phone ? (
-          <View style={styles.phoneChip}>
-            <Text style={styles.phoneLabel}>Principal</Text>
-            <Text style={styles.phoneNumber}>{lead.principal_phone}</Text>
-          </View>
+          <TouchableOpacity 
+            style={styles.phoneChip} 
+            onPress={() => window.location.href = `tel:${lead.principal_phone}`}
+          >
+            <View style={styles.phoneIconBadge}>
+              <Text style={{ fontSize: 18 }}>📞</Text>
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.phoneLabel}>Principal</Text>
+              <Text style={styles.phoneNumber}>{lead.principal_phone}</Text>
+            </View>
+            <Text style={styles.callNowText}>Call Now</Text>
+          </TouchableOpacity>
         ) : null}
         {lead.chairman_phone ? (
-          <View style={styles.phoneChip}>
-            <Text style={styles.phoneLabel}>Chairman</Text>
-            <Text style={styles.phoneNumber}>{lead.chairman_phone}</Text>
-          </View>
+          <TouchableOpacity 
+            style={styles.phoneChip} 
+            onPress={() => window.location.href = `tel:${lead.chairman_phone}`}
+          >
+            <View style={styles.phoneIconBadge}>
+              <Text style={{ fontSize: 18 }}>📞</Text>
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.phoneLabel}>Chairman</Text>
+              <Text style={styles.phoneNumber}>{lead.chairman_phone}</Text>
+            </View>
+            <Text style={styles.callNowText}>Call Now</Text>
+          </TouchableOpacity>
         ) : null}
       </View>
 
@@ -274,37 +292,158 @@ export default function AdminLeadDetailPage() {
 }
 
 const styles = StyleSheet.create({
-  scroll: { flex: 1 },
-  scrollContent: { paddingBottom: 32 },
-  title: { fontSize: 22, fontWeight: '700', color: '#f8fafc', marginBottom: 4 },
-  meta: { fontSize: 14, color: '#94a3b8', marginBottom: 16 },
-  errorBox: { backgroundColor: 'rgba(239,68,68,0.1)', borderRadius: 8, padding: 12, marginBottom: 12 },
-  errorText: { color: '#ef4444', fontSize: 14 },
-  noticeBox: { backgroundColor: 'rgba(34,197,94,0.1)', borderRadius: 8, padding: 12, marginBottom: 12 },
-  noticeText: { color: '#22c55e', fontSize: 14 },
-  section: { backgroundColor: '#1e293b', borderRadius: 12, padding: 16, marginBottom: 12 },
-  sectionTitle: { fontSize: 16, fontWeight: '600', color: '#f8fafc', marginBottom: 12 },
-  phoneChip: {
-    flexDirection: 'row', alignItems: 'center', backgroundColor: '#0f172a',
-    borderRadius: 10, padding: 14, marginBottom: 8, minHeight: 48, gap: 12,
+  scroll: { flex: 1, backgroundColor: '#0b1120' },
+  scrollContent: { padding: 20, paddingBottom: 40 },
+  title: { 
+    fontSize: 26, 
+    fontWeight: '800', 
+    color: '#f8fafc', 
+    marginBottom: 6,
+    fontFamily: 'Montserrat'
   },
-  phoneLabel: { fontSize: 12, color: '#94a3b8', fontWeight: '500', width: 80 },
-  phoneNumber: { fontSize: 16, color: '#60a5fa', fontWeight: '600' },
-  stageChip: { paddingHorizontal: 14, paddingVertical: 8, borderRadius: 16, backgroundColor: '#0f172a', marginRight: 6 },
-  stageChipText: { fontSize: 12, fontWeight: '600' },
-  dropdownLabel: { fontSize: 13, color: '#94a3b8', marginBottom: 8, marginTop: 8 },
-  dropdownRow: { flexDirection: 'row', marginBottom: 8 },
-  optionChip: { paddingHorizontal: 14, paddingVertical: 8, borderRadius: 16, backgroundColor: '#0f172a', marginRight: 6 },
-  optionActive: { backgroundColor: '#2563eb' },
-  optionText: { fontSize: 13, color: '#94a3b8', fontWeight: '500' },
+  meta: { 
+    fontSize: 15, 
+    color: '#94a3b8', 
+    marginBottom: 24,
+    fontFamily: 'Poppins'
+  },
+  errorBox: { 
+    backgroundColor: 'rgba(226,78,89,0.1)', 
+    borderRadius: 12, 
+    padding: 16, 
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(226,78,89,0.2)',
+  },
+  errorText: { color: '#E24E59', fontSize: 14, fontFamily: 'Poppins' },
+  noticeBox: { 
+    backgroundColor: 'rgba(18,112,227,0.1)', 
+    borderRadius: 12, 
+    padding: 16, 
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(18,112,227,0.2)',
+  },
+  noticeText: { color: '#1270E3', fontSize: 14, fontWeight: '600', fontFamily: 'Poppins' },
+  section: { 
+    backgroundColor: '#171f2f', 
+    borderRadius: 20, 
+    padding: 20, 
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.05)',
+  },
+  sectionTitle: { 
+    fontSize: 18, 
+    fontWeight: '700', 
+    color: '#f8fafc', 
+    marginBottom: 16,
+    fontFamily: 'Montserrat'
+  },
+  phoneChip: {
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    backgroundColor: 'rgba(15, 23, 42, 0.5)',
+    borderRadius: 16, 
+    padding: 16, 
+    marginBottom: 12, 
+    gap: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.05)',
+  },
+  phoneIconBadge: {
+    width: 44,
+    height: 44,
+    borderRadius: 12,
+    backgroundColor: 'rgba(18, 112, 227, 0.1)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  phoneLabel: { 
+    fontSize: 12, 
+    color: '#94a3b8', 
+    fontWeight: '600',
+    fontFamily: 'Poppins',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  phoneNumber: { 
+    fontSize: 17, 
+    color: '#1270E3', 
+    fontWeight: '700',
+    fontFamily: 'Poppins',
+    marginTop: 2,
+  },
+  callNowText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#E24E59',
+    fontFamily: 'Poppins',
+  },
+  stageChip: { 
+    paddingHorizontal: 16, 
+    paddingVertical: 10, 
+    borderRadius: 12, 
+    backgroundColor: 'rgba(15, 23, 42, 0.5)', 
+    marginRight: 8,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.05)',
+  },
+  stageChipText: { fontSize: 13, fontWeight: '700', fontFamily: 'Poppins' },
+  dropdownLabel: { 
+    fontSize: 13, 
+    color: '#94a3b8', 
+    marginBottom: 10, 
+    marginTop: 10,
+    fontWeight: '600',
+    fontFamily: 'Poppins'
+  },
+  dropdownRow: { flexDirection: 'row', marginBottom: 12 },
+  optionChip: { 
+    paddingHorizontal: 16, 
+    paddingVertical: 10, 
+    borderRadius: 12, 
+    backgroundColor: 'rgba(15, 23, 42, 0.5)', 
+    marginRight: 8,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.05)',
+  },
+  optionActive: { 
+    backgroundColor: '#1270E3',
+    borderColor: '#1270E3',
+  },
+  optionText: { fontSize: 13, color: '#94a3b8', fontWeight: '600', fontFamily: 'Poppins' },
   optionTextActive: { color: '#ffffff' },
-  assignBtn: { backgroundColor: '#2563eb', borderRadius: 10, padding: 14, alignItems: 'center', marginTop: 12, minHeight: 48 },
+  assignBtn: { 
+    backgroundColor: '#E24E59', 
+    borderRadius: 14, 
+    padding: 16, 
+    alignItems: 'center', 
+    marginTop: 16,
+    shadowColor: '#E24E59',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+  },
   assignBtnDisabled: { opacity: 0.6 },
-  assignBtnText: { color: '#fff', fontWeight: '600', fontSize: 15 },
-  callCard: { backgroundColor: '#0f172a', borderRadius: 8, padding: 12, marginBottom: 8 },
-  callHeader: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 },
-  callStatus: { fontSize: 14, color: '#60a5fa', fontWeight: '600', textTransform: 'capitalize' },
-  callDate: { fontSize: 12, color: '#64748b' },
-  callNotes: { fontSize: 13, color: '#cbd5e1', marginTop: 4 },
-  emptyText: { fontSize: 14, color: '#64748b', textAlign: 'center', paddingVertical: 16 },
+  assignBtnText: { color: '#fff', fontWeight: '700', fontSize: 16, fontFamily: 'Poppins' },
+  callCard: { 
+    backgroundColor: 'rgba(15, 23, 42, 0.5)', 
+    borderRadius: 14, 
+    padding: 16, 
+    marginBottom: 10,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.05)',
+  },
+  callHeader: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 6 },
+  callStatus: { 
+    fontSize: 15, 
+    color: '#1270E3', 
+    fontWeight: '700', 
+    textTransform: 'capitalize',
+    fontFamily: 'Poppins'
+  },
+  callDate: { fontSize: 12, color: '#64748b', fontFamily: 'Poppins' },
+  callNotes: { fontSize: 14, color: '#cbd5e1', marginTop: 4, fontFamily: 'Poppins', lineHeight: 20 },
+  emptyText: { fontSize: 14, color: '#64748b', textAlign: 'center', paddingVertical: 20, fontFamily: 'Poppins' },
 });

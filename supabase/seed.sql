@@ -12,7 +12,7 @@ values (
   '00000000-0000-0000-0000-000000000001', 
   'authenticated', 
   'authenticated', 
-  'admin@jiyasu.com', 
+  'admin@jigyasu.com', 
   crypt('Admin123!', gen_salt('bf')), 
   now(), now(), now(), 
   '{"provider":"email","providers":["email"]}', 
@@ -25,7 +25,7 @@ insert into public.users (id, full_name, email, role, is_active)
 values (
   '00000000-0000-0000-0000-000000000001', 
   'Local Admin', 
-  'admin@jiyasu.com', 
+  'admin@jigyasu.com', 
   'admin',
   true
 ) ON CONFLICT DO NOTHING;
@@ -42,7 +42,7 @@ values (
   '00000000-0000-0000-0000-000000000002', 
   'authenticated', 
   'authenticated', 
-  'tl@jiyasu.com', 
+  'tl@jigyasu.com', 
   crypt('Lead123!', gen_salt('bf')), 
   now(), now(), now(), 
   '{"provider":"email","providers":["email"]}', 
@@ -55,7 +55,7 @@ insert into public.users (id, full_name, email, role, is_active)
 values (
   '00000000-0000-0000-0000-000000000002', 
   'Test Team Lead', 
-  'tl@jiyasu.com', 
+  'tl@jigyasu.com', 
   'team_lead',
   true
 ) ON CONFLICT DO NOTHING;
@@ -72,7 +72,7 @@ values (
   '00000000-0000-0000-0000-000000000003', 
   'authenticated', 
   'authenticated', 
-  'caller@jiyasu.com', 
+  'caller@jigyasu.com', 
   crypt('Caller123!', gen_salt('bf')), 
   now(), now(), now(), 
   '{"provider":"email","providers":["email"]}', 
@@ -85,7 +85,7 @@ insert into public.users (id, full_name, email, role, team_lead_id, is_active)
 values (
   '00000000-0000-0000-0000-000000000003', 
   'Test Caller', 
-  'caller@jiyasu.com', 
+  'caller@jigyasu.com', 
   'caller',
   '00000000-0000-0000-0000-000000000002',
   true

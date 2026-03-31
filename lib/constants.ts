@@ -34,11 +34,11 @@ export const STAGE_LABELS: Record<LeadStage, string> = {
 
 export const STAGE_COLORS: Record<LeadStage, string> = {
   uncontacted: '#94a3b8',
-  contacted: '#60a5fa',
+  contacted: '#1270E3',
   interested: '#a78bfa',
-  demo_booked: '#f59e0b',
+  demo_booked: '#E24E59',
   mql: '#06b6d4',
-  proposal_sent: '#f97316',
+  proposal_sent: '#f59e0b',
   won: '#22c55e',
   lost: '#ef4444',
 };
@@ -66,7 +66,7 @@ export const CALL_STATUS_COLORS: Record<CallStatus, string> = {
   not_answered: '#94a3b8',
   busy: '#f59e0b',
   wrong_number: '#ef4444',
-  interested: '#a78bfa',
+  interested: '#E24E59',
   not_interested: '#64748b',
 };
 

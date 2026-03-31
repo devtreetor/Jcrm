@@ -46,7 +46,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     <View style={styles.container}>
       <View style={styles.header}>
         <View style={styles.headerLeft}>
-          <Text style={styles.logoText}>Jiyasu</Text>
+          <Text style={styles.logoText}>Jigyasu</Text>
           <View style={styles.roleBadge}>
             <Text style={styles.roleBadgeText}>Admin</Text>
           </View>
@@ -107,10 +107,10 @@ const styles = StyleSheet.create({
   logoText: {
     fontSize: 20,
     fontWeight: '700',
-    color: '#60a5fa',
+    color: '#E24E59',
   },
   roleBadge: {
-    backgroundColor: 'rgba(37, 99, 235, 0.2)',
+    backgroundColor: 'rgba(18, 112, 227, 0.2)',
     paddingHorizontal: 8,
     paddingVertical: 2,
     borderRadius: 6,
@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
   roleBadgeText: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#60a5fa',
+    color: '#1270E3',
   },
   headerRight: {
     flexDirection: 'row',
@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   navLabelActive: {
-    color: '#60a5fa',
+    color: '#1270E3',
   },
   content: {
     flex: 1,
