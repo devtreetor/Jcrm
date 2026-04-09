@@ -11,6 +11,8 @@ export async function POST(request: NextRequest) {
     const role = request.headers.get('x-user-role');
     const userId = request.headers.get('x-user-id');
 
+    console.log('[POST /api/leads/import] role:', role, 'userId:', userId);
+
     if (role !== 'admin') {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
