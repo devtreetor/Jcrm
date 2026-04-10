@@ -17,6 +17,15 @@ export function getSupabaseServiceClient(): SupabaseClient {
       autoRefreshToken: false,
       persistSession: false,
     },
+    db: {
+      schema: 'public',
+    },
+    global: {
+      headers: {
+        Authorization: `Bearer ${serviceRoleKey}`,
+        apikey: serviceRoleKey,
+      },
+    },
   });
 
   return serverInstance;
