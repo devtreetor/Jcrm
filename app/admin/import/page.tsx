@@ -28,7 +28,6 @@ export default function AdminImportPage() {
     if (selected) {
       setFile(selected);
       setResult(null);
-      setError('');
     }
   }, []);
 
