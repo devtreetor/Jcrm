@@ -31,7 +31,7 @@ export async function assignmentGuard(
         return {
           valid: false,
           status: 400,
-          error: 'Team lead must be assigned before assigning a caller.',
+          error: 'Team lead must be assigned before assigning a sales executive.',
         };
       }
 
@@ -46,7 +46,7 @@ export async function assignmentGuard(
           return {
             valid: false,
             status: 400,
-            error: 'Caller not found.',
+            error: 'Sales Executive not found.',
           };
         }
 
@@ -63,7 +63,7 @@ export async function assignmentGuard(
           return {
             valid: false,
             status: 403,
-            error: `Caller ${callerName} belongs to a different team lead. Only callers under ${tlName} can be assigned to this lead.`,
+            error: `Sales Executive ${callerName} belongs to a different team lead. Only sales executives under ${tlName} can be assigned to this lead.`,
           };
         }
       }
@@ -76,7 +76,7 @@ export async function assignmentGuard(
         return {
           valid: false,
           status: 400,
-          error: 'Team lead must be assigned before assigning a caller.',
+          error: 'Team lead must be assigned before assigning a sales executive.',
         };
       }
 
@@ -91,7 +91,7 @@ export async function assignmentGuard(
           return {
             valid: false,
             status: 400,
-            error: 'Caller not found.',
+            error: 'Sales Executive not found.',
           };
         }
 
@@ -99,7 +99,7 @@ export async function assignmentGuard(
           return {
             valid: false,
             status: 403,
-            error: `Caller ${caller.full_name} belongs to a different team lead. You can only assign callers from your own team.`,
+            error: `Sales Executive ${caller.full_name} belongs to a different team lead. You can only assign sales executives from your own team.`,
           };
         }
       }
@@ -110,7 +110,7 @@ export async function assignmentGuard(
     return {
       valid: false,
       status: 403,
-      error: 'Callers are not allowed to assign leads.',
+      error: 'Sales Executives are not allowed to assign leads.',
     };
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Assignment validation failed';

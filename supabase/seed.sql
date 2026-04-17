@@ -76,7 +76,7 @@ values (
   crypt('Caller123!', gen_salt('bf')), 
   now(), now(), now(), 
   '{"provider":"email","providers":["email"]}', 
-  '{"full_name":"Test Caller"}', 
+  '{"full_name":"Test Sales Executive"}',  
   now(), now(), 
   '', '', '', ''
 ) ON CONFLICT DO NOTHING;
@@ -84,7 +84,7 @@ values (
 insert into public.users (id, full_name, email, role, team_lead_id, is_active)
 values (
   '00000000-0000-0000-0000-000000000003', 
-  'Test Caller', 
+  'Test Sales Executive',  
   'caller@jigyasu.com', 
   'caller',
   '00000000-0000-0000-0000-000000000002',

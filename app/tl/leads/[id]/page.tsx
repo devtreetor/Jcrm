@@ -88,7 +88,7 @@ export default function TLLeadDetailPage() {
       const json = await res.json();
       if (!res.ok) throw new Error(json.error);
       setLead(json.data);
-      setNotice('Caller assignment updated');
+      setNotice('Sales Executive assignment updated');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Assignment failed');
     } finally {
@@ -162,7 +162,7 @@ export default function TLLeadDetailPage() {
       </View>
 
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Assign Caller</Text>
+        <Text style={styles.sectionTitle}>Assign Sales Executive</Text>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.callerRow}>
           <TouchableOpacity
             style={[styles.callerChip, !selectedCl && styles.callerChipActive]}

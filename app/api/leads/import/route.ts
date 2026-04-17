@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Papa from 'papaparse';
+import * as XLSX from 'xlsx';
 import { importLeadRowSchema } from '@/lib/schemas/import.schema';
 import { getSupabaseServiceClient } from '@/lib/supabase/server';
 import { createImportBatch } from '@/lib/db/import';
@@ -27,22 +28,61 @@ export async function POST(request: NextRequest) {
 
     if (!file || !(file instanceof File)) {
       return NextResponse.json(
-        { error: 'CSV file is required. Provide a file field in multipart/form-data.' },
+        { error: 'A CSV or XLSX file is required. Provide a file field in multipart/form-data.' },
         { status: 400 }
       );
     }
 
-    const csvText = await file.text();
+    const fileName = file.name.toLowerCase();
+    const isXlsx = fileName.endsWith('.xlsx') || fileName.endsWith('.xls');
+    const isCsv = fileName.endsWith('.csv');
+
+    if (!isXlsx && !isCsv) {
+      return NextResponse.json(
+        { error: 'Unsupported file format. Please upload a .csv or .xlsx file.' },
+        { status: 400 }
+      );
+    }
+
     const maxRows = parseInt(process.env.IMPORT_MAX_ROWS ?? '777', 10);
     const chunkSize = parseInt(process.env.IMPORT_CHUNK_SIZE ?? '500', 10);
 
-    const parseResult = Papa.parse<Record<string, string>>(csvText, {
-      header: true,
-      skipEmptyLines: true,
-      transformHeader: (header: string) => header.trim().toLowerCase().replace(/\s+/g, '_'),
-    });
+    let rows: Record<string, string>[];
 
-    if (parseResult.data.length > maxRows) {
+    if (isXlsx) {
+      // Parse XLSX/XLS file
+      const arrayBuffer = await file.arrayBuffer();
+      const workbook = XLSX.read(arrayBuffer, { type: 'array' });
+      const sheetName = workbook.SheetNames[0];
+      if (!sheetName) {
+        return NextResponse.json(
+          { error: 'The uploaded Excel file has no sheets.' },
+          { status: 400 }
+        );
+      }
+      const sheet = workbook.Sheets[sheetName];
+      const rawRows = XLSX.utils.sheet_to_json<Record<string, unknown>>(sheet, { defval: '' });
+      // Normalize headers to match CSV convention: lowercase, underscores
+      rows = rawRows.map((row) => {
+        const normalized: Record<string, string> = {};
+        for (const [key, value] of Object.entries(row)) {
+          const normalizedKey = key.trim().toLowerCase().replace(/\s+/g, '_');
+          normalized[normalizedKey] = String(value ?? '').trim();
+        }
+        return normalized;
+      });
+    } else {
+      // Parse CSV file
+      const csvText = await file.text();
+      const parseResult = Papa.parse<Record<string, string>>(csvText, {
+        header: true,
+        skipEmptyLines: true,
+        transformHeader: (header: string) => header.trim().toLowerCase().replace(/\s+/g, '_'),
+      });
+      rows = parseResult.data;
+    }
+
+    if (rows.length > maxRows) {
       return NextResponse.json(
         {
           error: `File exceeds maximum of ${maxRows} rows. Please split your import and try again.`,
@@ -69,12 +109,12 @@ export async function POST(request: NextRequest) {
       supabase,
       userId,
       sourceEvent,
-      parseResult.data.length,
+      rows.length,
       0
     );
 
-    for (let i = 0; i < parseResult.data.length; i++) {
-      const row = parseResult.data[i];
+    for (let i = 0; i < rows.length; i++) {
+      const row = rows[i];
       const rowParsed = importLeadRowSchema.safeParse(row);
 
       if (!rowParsed.success) {
@@ -112,7 +152,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       data: {
         batch_id: batch.id,
-        total: parseResult.data.length,
+        total: rows.length,
         imported: totalImported,
         errors,
       },

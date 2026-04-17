@@ -7,7 +7,7 @@ export const ROLES: readonly UserRole[] = ['admin', 'team_lead', 'caller'] as co
 export const ROLE_LABELS: Record<UserRole, string> = {
   admin: 'Admin',
   team_lead: 'Team Lead',
-  caller: 'Caller',
+  caller: 'Sales Executive',
 };
 
 export const LEAD_STAGES: readonly LeadStage[] = [

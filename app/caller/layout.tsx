@@ -24,7 +24,7 @@ export default function CallerLayout({ children }: { children: React.ReactNode }
           router.push('/login');
           return;
         }
-        setUserName(user.full_name || 'Caller');
+        setUserName(user.full_name || 'Sales Executive');
       } else {
         router.push('/login');
       }
@@ -46,7 +46,7 @@ export default function CallerLayout({ children }: { children: React.ReactNode }
         <View style={styles.headerLeft}>
           <Text style={styles.logoText}>Jigyasu</Text>
           <View style={styles.roleBadge}>
-            <Text style={styles.roleBadgeText}>Caller</Text>
+            <Text style={styles.roleBadgeText}>Sales Executive</Text>
           </View>
         </View>
         <View style={styles.headerRight}>

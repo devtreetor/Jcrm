@@ -6,13 +6,14 @@ import {
   StyleSheet, ActivityIndicator,
 } from 'react-native';
 import { API_ROUTES } from '@/lib/constants';
+import { useToast } from '@/lib/toast/ToastContext';
 import type { ImportRowError } from '@/types/team.types';
 
 export default function AdminImportPage() {
   const [file, setFile] = useState<File | null>(null);
   const [sourceEvent, setSourceEvent] = useState('');
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const { showToast } = useToast();
   const [result, setResult] = useState<{
     batch_id: string;
     total: number;
@@ -33,13 +34,12 @@ export default function AdminImportPage() {
 
   const handleUpload = async () => {
     if (!file) {
-      setError('Please select a CSV file');
+      showToast('Please select a CSV or XLSX file', 'error');
       return;
     }
 
     try {
       setLoading(true);
-      setError('');
       setResult(null);
 
       const formData = new FormData();
@@ -57,8 +57,10 @@ export default function AdminImportPage() {
       const json = await res.json();
       if (!res.ok) throw new Error(json.error);
       setResult(json.data);
+      showToast('Import complete! Your leads have been uploaded successfully.', 'success');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Import failed');
+      const message = err instanceof Error ? err.message : 'Import failed';
+      showToast(message, 'error');
     } finally {
       setLoading(false);
     }
@@ -67,11 +69,8 @@ export default function AdminImportPage() {
   return (
     <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContent}>
       <Text style={styles.title}>Import Leads</Text>
-      <Text style={styles.subtitle}>Upload a CSV file with school lead data</Text>
+      <Text style={styles.subtitle}>Upload a CSV or XLSX file with school lead data</Text>
 
-      {error ? (
-        <View style={styles.errorBox}><Text style={styles.errorText}>{error}</Text></View>
-      ) : null}
 
       <View style={styles.formCard}>
         <Text style={styles.label}>Source Event (optional)</Text>
@@ -83,11 +82,11 @@ export default function AdminImportPage() {
           onChangeText={setSourceEvent}
         />
 
-        <Text style={styles.label}>CSV File</Text>
+        <Text style={styles.label}>CSV / XLSX File</Text>
         <View style={styles.fileInputWrapper}>
           <input
             type="file"
-            accept=".csv"
+            accept=".csv,.xlsx,.xls"
             onChange={handleFileSelect}
             style={{
               width: '100%',
@@ -101,7 +100,7 @@ export default function AdminImportPage() {
           <View style={styles.fileDisplay}>
             <Text style={styles.fileIcon}>📄</Text>
             <Text style={styles.fileText}>
-              {file ? file.name : 'Choose CSV file...'}
+              {file ? file.name : 'Choose CSV or XLSX file...'}
             </Text>
           </View>
         </View>

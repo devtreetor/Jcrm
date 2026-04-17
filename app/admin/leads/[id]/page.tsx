@@ -95,7 +95,7 @@ export default function AdminLeadDetailPage() {
     setSelectedTl(tlId);
     if (selectedCl) {
       setSelectedCl('');
-      setNotice('Caller unset — please reassign from the new team.');
+      setNotice('Sales Executive unset — please reassign from the new team.');
     }
   };
 
@@ -235,7 +235,7 @@ export default function AdminLeadDetailPage() {
 
         {selectedTl ? (
           <>
-            <Text style={styles.dropdownLabel}>Caller</Text>
+            <Text style={styles.dropdownLabel}>Sales Executive</Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.dropdownRow}>
               <TouchableOpacity
                 style={[styles.optionChip, !selectedCl && styles.optionActive]}

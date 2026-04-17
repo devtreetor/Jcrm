@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import { ToastProvider } from '@/lib/toast/ToastContext';
 
 export const metadata: Metadata = {
   title: 'Jigyasu Sales App',
@@ -21,7 +22,9 @@ export default function RootLayout({
         />
       </head>
       <body className="bg-surface-900 text-surface-50 min-h-screen antialiased">
-        {children}
+        <ToastProvider>
+          {children}
+        </ToastProvider>
       </body>
     </html>
   );
