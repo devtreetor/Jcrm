@@ -42,7 +42,7 @@ create table public.leads (
   chairman_phone text,
   stage text not null default 'uncontacted' check (stage in (
     'uncontacted','contacted','interested',
-    'demo_booked','mql','proposal_sent','won','lost'
+    'demo_booked','meeting_fixed','meeting_done','negotiation','proposal_sent','won','lost'
   )),
   assigned_tl_id uuid references public.users(id) on delete set null,
   assigned_cl_id uuid references public.users(id) on delete set null,

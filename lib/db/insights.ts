@@ -69,9 +69,11 @@ export async function getInsights(
       return count ?? 0;
     };
 
-    const [demosBooked, mqls, proposalsSent, won, lost] = await Promise.all([
+    const [demosBooked, meetingsFixed, meetingsDone, negotiations, proposalsSent, won, lost] = await Promise.all([
       stageCountQuery('demo_booked'),
-      stageCountQuery('mql'),
+      stageCountQuery('meeting_fixed'),
+      stageCountQuery('meeting_done'),
+      stageCountQuery('negotiation'),
       stageCountQuery('proposal_sent'),
       stageCountQuery('won'),
       stageCountQuery('lost'),
@@ -80,7 +82,9 @@ export async function getInsights(
     return {
       total_calls: totalCalls ?? 0,
       demos_booked: demosBooked,
-      mqls,
+      meetings_fixed: meetingsFixed,
+      meetings_done: meetingsDone,
+      negotiations,
       proposals_sent: proposalsSent,
       won,
       lost,

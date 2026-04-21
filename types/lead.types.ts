@@ -3,7 +3,9 @@ export type LeadStage =
   | 'contacted'
   | 'interested'
   | 'demo_booked'
-  | 'mql'
+  | 'meeting_fixed'
+  | 'meeting_done'
+  | 'negotiation'
   | 'proposal_sent'
   | 'won'
   | 'lost';

@@ -10,6 +10,10 @@ export const updateStageSchema = z.object({
   stage: z.enum(LEAD_STAGES as unknown as [string, ...string[]]),
 });
 
+export const updateMultiStageSchema = z.object({
+  stages: z.array(z.enum(LEAD_STAGES as unknown as [string, ...string[]])).min(1, 'At least one stage required').max(10),
+});
+
 export const leadFiltersSchema = z.object({
   stage: z.enum(LEAD_STAGES as unknown as [string, ...string[]]).optional(),
   assigned_tl_id: z.string().uuid().optional(),

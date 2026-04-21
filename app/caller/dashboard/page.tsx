@@ -43,7 +43,7 @@ export default function CallerDashboard() {
     ? [
         { label: 'My Calls', value: insights.total_calls, color: '#22c55e' },
         { label: STAGE_LABELS.demo_booked, value: insights.demos_booked, color: STAGE_COLORS.demo_booked },
-        { label: STAGE_LABELS.mql, value: insights.mqls, color: STAGE_COLORS.mql },
+        { label: STAGE_LABELS.meeting_fixed, value: insights.meetings_fixed, color: STAGE_COLORS.meeting_fixed },
         { label: STAGE_LABELS.won, value: insights.won, color: STAGE_COLORS.won },
       ]
     : [];

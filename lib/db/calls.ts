@@ -1,5 +1,5 @@
 import { type SupabaseClient } from '@supabase/supabase-js';
-import type { CallLog, CreateCallLogPayload } from '@/types/call.types';
+import type { CallLog, CallPhoto, CreateCallLogPayload } from '@/types/call.types';
 
 export async function getCallLogsByLead(
   supabase: SupabaseClient,
@@ -13,7 +13,32 @@ export async function getCallLogsByLead(
       .order('called_at', { ascending: false });
 
     if (error) throw error;
-    return data as CallLog[];
+
+    const logs = data as CallLog[];
+
+    // Batch-fetch photos for all call logs
+    if (logs.length > 0) {
+      const logIds = logs.map((l) => l.id);
+      const { data: photos, error: photosError } = await supabase
+        .from('call_photos')
+        .select('*')
+        .in('call_log_id', logIds)
+        .order('created_at', { ascending: true });
+
+      if (!photosError && photos) {
+        const photosByLog = new Map<string, CallPhoto[]>();
+        for (const photo of photos as CallPhoto[]) {
+          const existing = photosByLog.get(photo.call_log_id) || [];
+          existing.push(photo);
+          photosByLog.set(photo.call_log_id, existing);
+        }
+        for (const log of logs) {
+          log.photos = photosByLog.get(log.id) || [];
+        }
+      }
+    }
+
+    return logs;
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Failed to fetch call logs';
     throw new Error(message);
@@ -40,7 +65,30 @@ export async function createCallLog(
       .single();
 
     if (error) throw error;
-    return data as CallLog;
+
+    const callLog = data as CallLog;
+    callLog.photos = [];
+
+    // Insert photos if provided
+    if (payload.photo_urls && payload.photo_urls.length > 0) {
+      const photoRows = payload.photo_urls.map((url) => ({
+        call_log_id: callLog.id,
+        photo_url: url,
+      }));
+
+      const { data: photos, error: photosError } = await supabase
+        .from('call_photos')
+        .insert(photoRows)
+        .select();
+
+      if (photosError) {
+        console.error('Failed to insert call photos:', photosError.message);
+      } else {
+        callLog.photos = (photos as CallPhoto[]) || [];
+      }
+    }
+
+    return callLog;
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Failed to create call log';
     throw new Error(message);

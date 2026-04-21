@@ -34,7 +34,9 @@ export interface ImportRowError {
 export interface InsightsData {
   total_calls: number;
   demos_booked: number;
-  mqls: number;
+  meetings_fixed: number;
+  meetings_done: number;
+  negotiations: number;
   proposals_sent: number;
   won: number;
   lost: number;

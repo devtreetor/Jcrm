@@ -47,7 +47,8 @@ export default function TLDashboard() {
     ? [
         { label: 'Total Calls', value: insights.total_calls, color: '#a78bfa' },
         { label: STAGE_LABELS.demo_booked, value: insights.demos_booked, color: STAGE_COLORS.demo_booked },
-        { label: STAGE_LABELS.mql, value: insights.mqls, color: STAGE_COLORS.mql },
+        { label: STAGE_LABELS.meeting_fixed, value: insights.meetings_fixed, color: STAGE_COLORS.meeting_fixed },
+        { label: STAGE_LABELS.meeting_done, value: insights.meetings_done, color: STAGE_COLORS.meeting_done },
         { label: STAGE_LABELS.won, value: insights.won, color: STAGE_COLORS.won },
         { label: STAGE_LABELS.lost, value: insights.lost, color: STAGE_COLORS.lost },
         { label: STAGE_LABELS.proposal_sent, value: insights.proposals_sent, color: STAGE_COLORS.proposal_sent },

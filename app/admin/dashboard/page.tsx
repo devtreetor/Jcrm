@@ -16,7 +16,9 @@ const RANGE_OPTIONS: { label: string; value: InsightsRange }[] = [
 const StageChart = ({ data }: { data: InsightsData }) => {
   const stages = [
     { label: 'Demos', value: data.demos_booked, color: '#E24E59' },
-    { label: 'MQL', value: data.mqls, color: '#1270E3' },
+    { label: 'Mtg Fixed', value: data.meetings_fixed, color: '#06b6d4' },
+    { label: 'Mtg Done', value: data.meetings_done, color: '#0ea5e9' },
+    { label: 'Negotiation', value: data.negotiations, color: '#8b5cf6' },
     { label: 'Proposal', value: data.proposals_sent, color: '#F8DE6F' },
     { label: 'Won', value: data.won, color: '#22c55e' },
     { label: 'Lost', value: data.lost, color: '#94a3b8' },
@@ -82,7 +84,9 @@ export default function AdminDashboard() {
     ? [
         { label: 'Calls', value: insights.total_calls, color: '#1270E3' },
         { label: 'Demos', value: insights.demos_booked, color: '#E24E59' },
-        { label: 'MQL', value: insights.mqls, color: '#F8DE6F' },
+        { label: 'Mtg Fixed', value: insights.meetings_fixed, color: '#06b6d4' },
+        { label: 'Mtg Done', value: insights.meetings_done, color: '#0ea5e9' },
+        { label: 'Negotiation', value: insights.negotiations, color: '#8b5cf6' },
         { label: 'Proposal', value: insights.proposals_sent, color: '#a78bfa' },
         { label: 'Won', value: insights.won, color: '#22c55e' },
         { label: 'Lost', value: insights.lost, color: '#94a3b8' },
@@ -200,7 +204,7 @@ const chartStyles = StyleSheet.create({
   },
   barWrapper: {
     alignItems: 'center',
-    width: '18%',
+    width: '13%',
   },
   barBackground: {
     width: 12,
