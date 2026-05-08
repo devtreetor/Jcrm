@@ -99,6 +99,8 @@ export async function POST(request: NextRequest) {
       board: string;
       principal_phone: string;
       chairman_phone: string;
+      principal_name: string;
+      chairman_name: string;
       import_batch_id: string;
     }> = [];
     const errors: ImportRowError[] = [];
@@ -131,6 +133,8 @@ export async function POST(request: NextRequest) {
         board: rowParsed.data.board || '',
         principal_phone: rowParsed.data.principal_phone || '',
         chairman_phone: rowParsed.data.chairman_phone || '',
+        principal_name: rowParsed.data.principal_name || '',
+        chairman_name: rowParsed.data.chairman_name || '',
         import_batch_id: batch.id,
       });
     }

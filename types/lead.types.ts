@@ -19,6 +19,8 @@ export interface Lead {
   board: string | null;
   principal_phone: string | null;
   chairman_phone: string | null;
+  principal_name: string | null;
+  chairman_name: string | null;
   stage: LeadStage;
   assigned_tl_id: string | null;
   assigned_cl_id: string | null;
@@ -35,6 +37,8 @@ export interface CreateLeadPayload {
   board?: string | null;
   principal_phone?: string | null;
   chairman_phone?: string | null;
+  principal_name?: string | null;
+  chairman_name?: string | null;
   stage?: LeadStage;
   assigned_tl_id?: string | null;
   assigned_cl_id?: string | null;

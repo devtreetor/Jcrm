@@ -170,7 +170,7 @@ export default function AdminLeadDetailPage() {
               <Text style={{ fontSize: 18 }}>📞</Text>
             </View>
             <View style={{ flex: 1 }}>
-              <Text style={styles.phoneLabel}>Principal</Text>
+              <Text style={styles.phoneLabel}>{lead.principal_name || 'Principal'}</Text>
               <Text style={styles.phoneNumber}>{lead.principal_phone}</Text>
             </View>
             <Text style={styles.callNowText}>Call Now</Text>
@@ -185,7 +185,7 @@ export default function AdminLeadDetailPage() {
               <Text style={{ fontSize: 18 }}>📞</Text>
             </View>
             <View style={{ flex: 1 }}>
-              <Text style={styles.phoneLabel}>Chairman</Text>
+              <Text style={styles.phoneLabel}>{lead.chairman_name || 'Chairman'}</Text>
               <Text style={styles.phoneNumber}>{lead.chairman_phone}</Text>
             </View>
             <Text style={styles.callNowText}>Call Now</Text>

@@ -152,6 +152,8 @@ export async function batchInsertLeads(
     board: string;
     principal_phone: string;
     chairman_phone: string;
+    principal_name: string;
+    chairman_name: string;
     import_batch_id: string;
   }>
 ): Promise<number> {

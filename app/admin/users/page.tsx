@@ -20,6 +20,14 @@ export default function AdminUsersPage() {
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState('');
 
+  // Edit state
+  const [editingUserId, setEditingUserId] = useState<string | null>(null);
+  const [editName, setEditName] = useState('');
+  const [editEmail, setEditEmail] = useState('');
+  const [editRole, setEditRole] = useState<UserRole>('caller');
+  const [editTlId, setEditTlId] = useState('');
+  const [editSubmitting, setEditSubmitting] = useState(false);
+
   const getToken = () => localStorage.getItem('token') || '';
 
   const fetchUsers = useCallback(async () => {
@@ -93,6 +101,62 @@ export default function AdminUsersPage() {
       fetchUsers();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to update user');
+    }
+  };
+
+  const startEdit = (user: User) => {
+    setEditingUserId(user.id);
+    setEditName(user.full_name);
+    setEditEmail(user.email);
+    setEditRole(user.role);
+    setEditTlId(user.team_lead_id || '');
+    setError('');
+    setSuccess('');
+  };
+
+  const cancelEdit = () => {
+    setEditingUserId(null);
+    setEditName('');
+    setEditEmail('');
+    setEditRole('caller');
+    setEditTlId('');
+  };
+
+  const handleEditSave = async () => {
+    if (!editingUserId) return;
+    try {
+      setEditSubmitting(true);
+      setError('');
+      setSuccess('');
+
+      const body: Record<string, unknown> = {
+        full_name: editName,
+        email: editEmail,
+        role: editRole,
+      };
+      if (editRole === 'caller' && editTlId) {
+        body.team_lead_id = editTlId;
+      } else {
+        body.team_lead_id = null;
+      }
+
+      const res = await fetch(`${API_ROUTES.USERS}/${editingUserId}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${getToken()}`,
+        },
+        body: JSON.stringify(body),
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error);
+      setSuccess('Profile updated successfully');
+      cancelEdit();
+      fetchUsers();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to update profile');
+    } finally {
+      setEditSubmitting(false);
     }
   };
 
@@ -180,23 +244,103 @@ export default function AdminUsersPage() {
       ) : (
         users.map((user) => (
           <View key={user.id} style={[styles.userCard, !user.is_active && styles.userCardInactive]}>
-            <View style={styles.userInfo}>
-              <Text style={styles.userName}>{user.full_name}</Text>
-              <Text style={styles.userEmail}>{user.email}</Text>
-            </View>
-            <View style={styles.userActions}>
-              <View style={[styles.roleBadge, { backgroundColor: user.role === 'admin' ? '#2563eb20' : user.role === 'team_lead' ? '#a78bfa20' : '#22c55e20' }]}>
-                <Text style={[styles.roleBadgeText, { color: user.role === 'admin' ? '#60a5fa' : user.role === 'team_lead' ? '#a78bfa' : '#22c55e' }]}>
-                  {ROLE_LABELS[user.role]}
-                </Text>
+            {editingUserId === user.id ? (
+              /* ── Edit Mode ── */
+              <View style={styles.editContainer}>
+                <View style={styles.editHeaderRow}>
+                  <Text style={styles.formTitle}>Edit Profile</Text>
+                  <TouchableOpacity onPress={cancelEdit}>
+                    <Text style={styles.editCancelText}>✕ Cancel</Text>
+                  </TouchableOpacity>
+                </View>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Full Name"
+                  placeholderTextColor="#64748b"
+                  value={editName}
+                  onChangeText={setEditName}
+                />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Email"
+                  placeholderTextColor="#64748b"
+                  value={editEmail}
+                  onChangeText={setEditEmail}
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                />
+                <Text style={styles.dropdownLabel}>Role</Text>
+                <View style={styles.roleRow}>
+                  {(['admin', 'team_lead', 'caller'] as UserRole[]).map((r) => (
+                    <TouchableOpacity
+                      key={r}
+                      style={[styles.roleChip, editRole === r && styles.roleChipActive]}
+                      onPress={() => setEditRole(r)}
+                    >
+                      <Text style={[styles.roleChipText, editRole === r && styles.roleChipTextActive]}>
+                        {ROLE_LABELS[r]}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+                {editRole === 'caller' && (
+                  <>
+                    <Text style={styles.dropdownLabel}>Team Lead</Text>
+                    <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.tlRow}>
+                      {teamLeads.map((tl) => (
+                        <TouchableOpacity
+                          key={tl.id}
+                          style={[styles.roleChip, editTlId === tl.id && styles.roleChipActive]}
+                          onPress={() => setEditTlId(tl.id)}
+                        >
+                          <Text style={[styles.roleChipText, editTlId === tl.id && styles.roleChipTextActive]}>
+                            {tl.full_name}
+                          </Text>
+                        </TouchableOpacity>
+                      ))}
+                    </ScrollView>
+                  </>
+                )}
+                <TouchableOpacity
+                  style={[styles.submitBtn, editSubmitting && styles.submitBtnDisabled]}
+                  onPress={handleEditSave}
+                  disabled={editSubmitting}
+                >
+                  {editSubmitting ? (
+                    <ActivityIndicator color="#fff" />
+                  ) : (
+                    <Text style={styles.submitBtnText}>Save Changes</Text>
+                  )}
+                </TouchableOpacity>
               </View>
-              <TouchableOpacity
-                style={[styles.toggleBtn, user.is_active ? styles.toggleBtnActive : styles.toggleBtnInactive]}
-                onPress={() => toggleActive(user)}
-              >
-                <Text style={styles.toggleText}>{user.is_active ? 'Active' : 'Inactive'}</Text>
-              </TouchableOpacity>
-            </View>
+            ) : (
+              /* ── View Mode ── */
+              <>
+                <View style={styles.userInfo}>
+                  <Text style={styles.userName}>{user.full_name}</Text>
+                  <Text style={styles.userEmail}>{user.email}</Text>
+                </View>
+                <View style={styles.userActions}>
+                  <View style={[styles.roleBadge, { backgroundColor: user.role === 'admin' ? '#2563eb20' : user.role === 'team_lead' ? '#a78bfa20' : '#22c55e20' }]}>
+                    <Text style={[styles.roleBadgeText, { color: user.role === 'admin' ? '#60a5fa' : user.role === 'team_lead' ? '#a78bfa' : '#22c55e' }]}>
+                      {ROLE_LABELS[user.role]}
+                    </Text>
+                  </View>
+                  <TouchableOpacity
+                    style={styles.editBtn}
+                    onPress={() => startEdit(user)}
+                  >
+                    <Text style={styles.editBtnText}>✎ Edit</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[styles.toggleBtn, user.is_active ? styles.toggleBtnActive : styles.toggleBtnInactive]}
+                    onPress={() => toggleActive(user)}
+                  >
+                    <Text style={styles.toggleText}>{user.is_active ? 'Active' : 'Inactive'}</Text>
+                  </TouchableOpacity>
+                </View>
+              </>
+            )}
           </View>
         ))
       )}
@@ -243,8 +387,13 @@ const styles = StyleSheet.create({
   userActions: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   roleBadge: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: 12 },
   roleBadgeText: { fontSize: 11, fontWeight: '600' },
+  editBtn: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: 12, backgroundColor: 'rgba(37,99,235,0.15)' },
+  editBtnText: { fontSize: 11, fontWeight: '600', color: '#60a5fa' },
   toggleBtn: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: 12 },
   toggleBtnActive: { backgroundColor: 'rgba(34,197,94,0.15)' },
   toggleBtnInactive: { backgroundColor: 'rgba(239,68,68,0.15)' },
   toggleText: { fontSize: 11, fontWeight: '600', color: '#cbd5e1' },
+  editContainer: { flex: 1 },
+  editHeaderRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 },
+  editCancelText: { fontSize: 13, color: '#ef4444', fontWeight: '600' },
 });

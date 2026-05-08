@@ -106,7 +106,7 @@ export default function AdminImportPage() {
 
         <View style={styles.formatInfo}>
           <Text style={styles.formatTitle}>Required columns:</Text>
-          <Text style={styles.formatText}>school_name (required), location, city, state, board, principal_phone, chairman_phone</Text>
+          <Text style={styles.formatText}>school_name (required), location, city, state, board, principal_name, principal_phone, chairman_name, chairman_phone</Text>
           <Text style={styles.formatNote}>Max 777 rows per import</Text>
         </View>
 

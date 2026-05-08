@@ -8,6 +8,8 @@ export const importLeadRowSchema = z.object({
   board: z.string().optional().default(''),
   principal_phone: z.string().optional().default(''),
   chairman_phone: z.string().optional().default(''),
+  principal_name: z.string().optional().default(''),
+  chairman_name: z.string().optional().default(''),
 });
 
 export const importQuerySchema = z.object({

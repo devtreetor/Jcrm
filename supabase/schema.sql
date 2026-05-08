@@ -40,6 +40,8 @@ create table public.leads (
   board text,
   principal_phone text,
   chairman_phone text,
+  principal_name text,
+  chairman_name text,
   stage text not null default 'uncontacted' check (stage in (
     'uncontacted','contacted','interested',
     'demo_booked','meeting_fixed','meeting_done','negotiation','proposal_sent','won','lost'

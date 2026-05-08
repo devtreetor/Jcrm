@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useRouter, usePathname } from 'next/navigation';
 import { ROUTES } from '@/lib/constants';
+import ChangePasswordModal from '@/app/components/ChangePasswordModal';
 
 const NAV_ITEMS = [
   { label: 'Dashboard', path: ROUTES.ADMIN_DASHBOARD, icon: '📊' },
@@ -16,6 +17,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const router = useRouter();
   const pathname = usePathname();
   const [userName, setUserName] = useState('');
+  const [showChangePassword, setShowChangePassword] = useState(false);
 
   useEffect(() => {
     try {
@@ -53,6 +55,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </View>
         <View style={styles.headerRight}>
           <Text style={styles.userName}>{userName}</Text>
+          <TouchableOpacity style={styles.changePwdBtn} onPress={() => setShowChangePassword(true)}>
+            <Text style={styles.changePwdText}>🔒 Password</Text>
+          </TouchableOpacity>
           <TouchableOpacity style={styles.logoutBtn} onPress={handleLogout}>
             <Text style={styles.logoutText}>Logout</Text>
           </TouchableOpacity>
@@ -79,6 +84,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       </View>
 
       <View style={styles.content}>{children}</View>
+
+      <ChangePasswordModal
+        visible={showChangePassword}
+        onClose={() => setShowChangePassword(false)}
+      />
     </View>
   );
 }
@@ -138,6 +148,17 @@ const styles = StyleSheet.create({
   logoutText: {
     fontSize: 13,
     color: '#ef4444',
+    fontWeight: '500',
+  },
+  changePwdBtn: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 6,
+    backgroundColor: 'rgba(18, 112, 227, 0.15)',
+  },
+  changePwdText: {
+    fontSize: 13,
+    color: '#1270E3',
     fontWeight: '500',
   },
   nav: {

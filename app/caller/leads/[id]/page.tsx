@@ -241,13 +241,13 @@ export default function CallerLeadDetailPage() {
           <Text style={styles.sectionTitle}>Contact Numbers</Text>
           {lead.principal_phone ? (
             <Pressable style={styles.phoneChip}>
-              <Text style={styles.phoneLabel}>📞 Principal</Text>
+              <Text style={styles.phoneLabel}>📞 {lead.principal_name || 'Principal'}</Text>
               <Text style={styles.phoneNumber}>{lead.principal_phone}</Text>
             </Pressable>
           ) : null}
           {lead.chairman_phone ? (
             <Pressable style={styles.phoneChip}>
-              <Text style={styles.phoneLabel}>📞 Chairman</Text>
+              <Text style={styles.phoneLabel}>📞 {lead.chairman_name || 'Chairman'}</Text>
               <Text style={styles.phoneNumber}>{lead.chairman_phone}</Text>
             </Pressable>
           ) : null}

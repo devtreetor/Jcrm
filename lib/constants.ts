@@ -89,6 +89,7 @@ export const ROUTES = {
 
 export const API_ROUTES = {
   AUTH_LOGIN: '/api/auth/login',
+  AUTH_CHANGE_PASSWORD: '/api/auth/change-password',
   USERS: '/api/users',
   TEAMS: '/api/teams',
   LEADS: '/api/leads',

@@ -21,6 +21,16 @@ export const updateUserSchema = z.object({
   is_active: z.boolean().optional(),
 });
 
+export const changePasswordSchema = z.object({
+  current_password: z.string().min(6, 'Current password must be at least 6 characters'),
+  new_password: z.string().min(6, 'New password must be at least 6 characters'),
+  confirm_password: z.string().min(6, 'Confirm password must be at least 6 characters'),
+}).refine((data) => data.new_password === data.confirm_password, {
+  message: 'New password and confirm password do not match',
+  path: ['confirm_password'],
+});
+
 export type LoginInput = z.infer<typeof loginSchema>;
 export type CreateUserInput = z.infer<typeof createUserSchema>;
 export type UpdateUserInput = z.infer<typeof updateUserSchema>;
+export type ChangePasswordInput = z.infer<typeof changePasswordSchema>;
