@@ -10,6 +10,7 @@ import {
   API_ROUTES, LEAD_STAGES, STAGE_LABELS, STAGE_COLORS,
   CALL_STATUSES, CALL_STATUS_LABELS,
 } from '@/lib/constants';
+import EditLeadModal from '@/app/components/EditLeadModal';
 import type { Lead, LeadStage } from '@/types/lead.types';
 import type { CallLog, CallStatus } from '@/types/call.types';
 
@@ -36,6 +37,7 @@ export default function CallerLeadDetailPage() {
   const [photos, setPhotos] = useState<PhotoPreview[]>([]);
   const [uploadingPhotos, setUploadingPhotos] = useState(false);
   const [lightboxUrl, setLightboxUrl] = useState<string | null>(null);
+  const [showEditModal, setShowEditModal] = useState(false);
 
   const cameraInputRef = useRef<HTMLInputElement>(null);
   const galleryInputRef = useRef<HTMLInputElement>(null);
@@ -228,11 +230,18 @@ export default function CallerLeadDetailPage() {
   return (
     <View style={styles.container}>
       <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContent}>
-        <Text style={styles.title}>{lead.school_name}</Text>
-        <Text style={styles.meta}>
-          {[lead.city, lead.state].filter(Boolean).join(', ') || 'No location'}
-          {lead.board ? ` • ${lead.board}` : ''}
-        </Text>
+        <View style={styles.headerRow}>
+          <View style={styles.titleContainer}>
+            <Text style={styles.title}>{lead.school_name}</Text>
+            <Text style={styles.meta}>
+              {[lead.city, lead.state].filter(Boolean).join(', ') || 'No location'}
+              {lead.board ? ` • ${lead.board}` : ''}
+            </Text>
+          </View>
+          <TouchableOpacity style={styles.editBtn} onPress={() => setShowEditModal(true)}>
+            <Text style={styles.editBtnText}>Edit</Text>
+          </TouchableOpacity>
+        </View>
 
         {error ? <View style={styles.errorBox}><Text style={styles.errorText}>{error}</Text></View> : null}
         {success ? <View style={styles.successBox}><Text style={styles.successText}>{success}</Text></View> : null}
@@ -524,6 +533,15 @@ export default function CallerLeadDetailPage() {
           </View>
         </Pressable>
       )}
+
+      {showEditModal && (
+        <EditLeadModal
+          lead={lead}
+          visible={showEditModal}
+          onClose={() => setShowEditModal(false)}
+          onUpdate={setLead}
+        />
+      )}
     </View>
   );
 }
@@ -532,8 +550,12 @@ const styles = StyleSheet.create({
   container: { flex: 1 },
   scroll: { flex: 1 },
   scrollContent: { paddingBottom: 80 },
+  headerRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 4 },
+  titleContainer: { flex: 1, paddingRight: 12 },
   title: { fontSize: 22, fontWeight: '700', color: '#f8fafc', marginBottom: 4 },
   meta: { fontSize: 14, color: '#94a3b8', marginBottom: 16 },
+  editBtn: { backgroundColor: '#334155', paddingHorizontal: 16, paddingVertical: 8, borderRadius: 8 },
+  editBtnText: { color: '#f8fafc', fontSize: 13, fontWeight: '600' },
   errorBox: { backgroundColor: 'rgba(239,68,68,0.1)', borderRadius: 8, padding: 12, marginBottom: 12 },
   errorText: { color: '#ef4444', fontSize: 14 },
   successBox: { backgroundColor: 'rgba(34,197,94,0.1)', borderRadius: 8, padding: 12, marginBottom: 12 },

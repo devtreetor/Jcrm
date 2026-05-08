@@ -6,6 +6,7 @@ import {
 } from 'react-native';
 import { useParams } from 'next/navigation';
 import { API_ROUTES, LEAD_STAGES, STAGE_LABELS, STAGE_COLORS } from '@/lib/constants';
+import EditLeadModal from '@/app/components/EditLeadModal';
 import type { Lead, LeadStage } from '@/types/lead.types';
 import type { CallLog } from '@/types/call.types';
 import type { User } from '@/types/user.types';
@@ -21,6 +22,7 @@ export default function TLLeadDetailPage() {
   const [assigning, setAssigning] = useState(false);
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
+  const [showEditModal, setShowEditModal] = useState(false);
 
   const getToken = () => localStorage.getItem('token') || '';
 
@@ -120,10 +122,17 @@ export default function TLLeadDetailPage() {
 
   return (
     <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContent}>
-      <Text style={styles.title}>{lead.school_name}</Text>
-      <Text style={styles.meta}>
-        {[lead.city, lead.state].filter(Boolean).join(', ') || 'No location'}
-      </Text>
+      <View style={styles.headerRow}>
+        <View style={styles.titleContainer}>
+          <Text style={styles.title}>{lead.school_name}</Text>
+          <Text style={styles.meta}>
+            {[lead.city, lead.state].filter(Boolean).join(', ') || 'No location'}
+          </Text>
+        </View>
+        <TouchableOpacity style={styles.editBtn} onPress={() => setShowEditModal(true)}>
+          <Text style={styles.editBtnText}>Edit</Text>
+        </TouchableOpacity>
+      </View>
 
       {error ? <View style={styles.errorBox}><Text style={styles.errorText}>{error}</Text></View> : null}
       {notice ? <View style={styles.noticeBox}><Text style={styles.noticeText}>{notice}</Text></View> : null}
@@ -207,6 +216,15 @@ export default function TLLeadDetailPage() {
           ))
         )}
       </View>
+
+      {showEditModal && (
+        <EditLeadModal
+          lead={lead}
+          visible={showEditModal}
+          onClose={() => setShowEditModal(false)}
+          onUpdate={setLead}
+        />
+      )}
     </ScrollView>
   );
 }
@@ -214,8 +232,12 @@ export default function TLLeadDetailPage() {
 const styles = StyleSheet.create({
   scroll: { flex: 1 },
   scrollContent: { paddingBottom: 32 },
+  headerRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 4 },
+  titleContainer: { flex: 1, paddingRight: 12 },
   title: { fontSize: 22, fontWeight: '700', color: '#f8fafc', marginBottom: 4 },
   meta: { fontSize: 14, color: '#94a3b8', marginBottom: 16 },
+  editBtn: { backgroundColor: '#334155', paddingHorizontal: 16, paddingVertical: 8, borderRadius: 8 },
+  editBtnText: { color: '#f8fafc', fontSize: 13, fontWeight: '600' },
   errorBox: { backgroundColor: 'rgba(239,68,68,0.1)', borderRadius: 8, padding: 12, marginBottom: 12 },
   errorText: { color: '#ef4444', fontSize: 14 },
   noticeBox: { backgroundColor: 'rgba(34,197,94,0.1)', borderRadius: 8, padding: 12, marginBottom: 12 },

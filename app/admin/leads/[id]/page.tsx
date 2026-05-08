@@ -6,6 +6,7 @@ import {
 } from 'react-native';
 import { useParams } from 'next/navigation';
 import { STAGE_LABELS, STAGE_COLORS, LEAD_STAGES, API_ROUTES } from '@/lib/constants';
+import EditLeadModal from '@/app/components/EditLeadModal';
 import type { Lead, LeadStage } from '@/types/lead.types';
 import type { CallLog } from '@/types/call.types';
 import type { User } from '@/types/user.types';
@@ -23,6 +24,7 @@ export default function AdminLeadDetailPage() {
   const [assigning, setAssigning] = useState(false);
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
+  const [showEditModal, setShowEditModal] = useState(false);
 
   const getToken = () => localStorage.getItem('token') || '';
 
@@ -150,11 +152,18 @@ export default function AdminLeadDetailPage() {
 
   return (
     <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContent}>
-      <Text style={styles.title}>{lead.school_name}</Text>
-      <Text style={styles.meta}>
-        {[lead.city, lead.state].filter(Boolean).join(', ') || 'No location'}{' '}
-        {lead.board ? `• ${lead.board}` : ''}
-      </Text>
+      <View style={styles.headerRow}>
+        <View style={styles.titleContainer}>
+          <Text style={styles.title}>{lead.school_name}</Text>
+          <Text style={styles.meta}>
+            {[lead.city, lead.state].filter(Boolean).join(', ') || 'No location'}{' '}
+            {lead.board ? `• ${lead.board}` : ''}
+          </Text>
+        </View>
+        <TouchableOpacity style={styles.editBtn} onPress={() => setShowEditModal(true)}>
+          <Text style={styles.editBtnText}>Edit</Text>
+        </TouchableOpacity>
+      </View>
 
       {error ? <View style={styles.errorBox}><Text style={styles.errorText}>{error}</Text></View> : null}
       {notice ? <View style={styles.noticeBox}><Text style={styles.noticeText}>{notice}</Text></View> : null}
@@ -287,6 +296,15 @@ export default function AdminLeadDetailPage() {
           ))
         )}
       </View>
+
+      {showEditModal && (
+        <EditLeadModal
+          lead={lead}
+          visible={showEditModal}
+          onClose={() => setShowEditModal(false)}
+          onUpdate={setLead}
+        />
+      )}
     </ScrollView>
   );
 }
@@ -294,11 +312,12 @@ export default function AdminLeadDetailPage() {
 const styles = StyleSheet.create({
   scroll: { flex: 1, backgroundColor: '#0b1120' },
   scrollContent: { padding: 20, paddingBottom: 40 },
+  headerRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 6 },
+  titleContainer: { flex: 1, paddingRight: 12 },
   title: { 
     fontSize: 26, 
     fontWeight: '800', 
     color: '#f8fafc', 
-    marginBottom: 6,
     fontFamily: 'Montserrat'
   },
   meta: { 
@@ -307,6 +326,8 @@ const styles = StyleSheet.create({
     marginBottom: 24,
     fontFamily: 'Poppins'
   },
+  editBtn: { backgroundColor: 'rgba(18,112,227,0.2)', paddingHorizontal: 16, paddingVertical: 8, borderRadius: 8, borderWidth: 1, borderColor: 'rgba(18,112,227,0.4)' },
+  editBtnText: { color: '#1270E3', fontSize: 13, fontWeight: '700', fontFamily: 'Poppins' },
   errorBox: { 
     backgroundColor: 'rgba(226,78,89,0.1)', 
     borderRadius: 12, 

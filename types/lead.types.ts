@@ -50,6 +50,18 @@ export interface AssignLeadPayload {
   assigned_cl_id: string | null;
 }
 
+export interface UpdateLeadPayload {
+  school_name?: string;
+  location?: string | null;
+  city?: string | null;
+  state?: string | null;
+  board?: string | null;
+  principal_phone?: string | null;
+  chairman_phone?: string | null;
+  principal_name?: string | null;
+  chairman_name?: string | null;
+}
+
 export interface UpdateStagePayload {
   stage: LeadStage;
 }

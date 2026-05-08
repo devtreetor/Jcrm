@@ -25,6 +25,19 @@ export const leadFiltersSchema = z.object({
   limit: z.coerce.number().int().min(1).max(100).default(20),
 });
 
+export const updateLeadSchema = z.object({
+  school_name: z.string().min(1, 'School name is required').optional(),
+  location: z.string().nullable().optional(),
+  city: z.string().nullable().optional(),
+  state: z.string().nullable().optional(),
+  board: z.string().nullable().optional(),
+  principal_phone: z.string().nullable().optional(),
+  chairman_phone: z.string().nullable().optional(),
+  principal_name: z.string().nullable().optional(),
+  chairman_name: z.string().nullable().optional(),
+});
+
 export type AssignLeadInput = z.infer<typeof assignLeadSchema>;
 export type UpdateStageInput = z.infer<typeof updateStageSchema>;
 export type LeadFiltersInput = z.infer<typeof leadFiltersSchema>;
+export type UpdateLeadInput = z.infer<typeof updateLeadSchema>;

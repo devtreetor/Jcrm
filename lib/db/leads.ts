@@ -142,6 +142,51 @@ export async function getStageHistory(
   }
 }
 
+export async function updateLead(
+  supabase: SupabaseClient,
+  id: string,
+  payload: Partial<Lead>
+): Promise<Lead> {
+  try {
+    // Only allow updating specific editable fields
+    const {
+      school_name,
+      location,
+      city,
+      state,
+      board,
+      principal_phone,
+      chairman_phone,
+      principal_name,
+      chairman_name,
+    } = payload;
+
+    const { data, error } = await supabase
+      .from('leads')
+      .update({
+        school_name,
+        location,
+        city,
+        state,
+        board,
+        principal_phone,
+        chairman_phone,
+        principal_name,
+        chairman_name,
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (error) throw error;
+    return data as Lead;
+  } catch (err) {
+    const message = err instanceof Error ? err.message : 'Failed to update lead';
+    throw new Error(message);
+  }
+}
+
 export async function batchInsertLeads(
   supabase: SupabaseClient,
   leads: Array<{
