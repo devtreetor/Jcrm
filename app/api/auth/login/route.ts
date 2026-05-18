@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { email, password } = parsed.data;
+    const { email, password, remember_me } = parsed.data;
     const supabase = getSupabaseServiceClient();
 
     const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
@@ -54,7 +54,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const jwtExpiry = parseInt(process.env.JWT_EXPIRY ?? '3600', 10);
+    const defaultExpiry = parseInt(process.env.JWT_EXPIRY ?? '3600', 10);
+    const jwtExpiry = remember_me ? 604800 : defaultExpiry; // 7 days if remember_me
     const secret = new TextEncoder().encode(jwtSecret);
 
     const token = await new SignJWT({

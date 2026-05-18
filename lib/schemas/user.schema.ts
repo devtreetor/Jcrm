@@ -4,6 +4,7 @@ import { ROLES } from '@/lib/constants';
 export const loginSchema = z.object({
   email: z.string().email('Invalid email format'),
   password: z.string().min(6, 'Password must be at least 6 characters'),
+  remember_me: z.boolean().optional().default(false),
 });
 
 export const createUserSchema = z.object({

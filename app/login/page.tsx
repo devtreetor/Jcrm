@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useCallback } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, Switch } from 'react-native';
 import { useRouter } from 'next/navigation';
 import { API_ROUTES, ROUTES } from '@/lib/constants';
 import type { UserRole } from '@/types/user.types';
@@ -10,6 +10,7 @@ export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -26,7 +27,7 @@ export default function LoginPage() {
       const res = await fetch(API_ROUTES.AUTH_LOGIN, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email.trim(), password }),
+        body: JSON.stringify({ email: email.trim(), password, remember_me: rememberMe }),
       });
 
       const json = await res.json();
@@ -54,7 +55,7 @@ export default function LoginPage() {
     } finally {
       setLoading(false);
     }
-  }, [email, password, router]);
+  }, [email, password, rememberMe, router]);
 
   return (
     <View style={styles.container}>
@@ -97,6 +98,20 @@ export default function LoginPage() {
             secureTextEntry
           />
         </View>
+
+        <TouchableOpacity
+          style={styles.rememberRow}
+          onPress={() => setRememberMe(!rememberMe)}
+          activeOpacity={0.8}
+        >
+          <Switch
+            value={rememberMe}
+            onValueChange={setRememberMe}
+            trackColor={{ false: 'rgba(255,255,255,0.1)', true: 'rgba(226,78,89,0.4)' }}
+            thumbColor={rememberMe ? '#E24E59' : '#64748b'}
+          />
+          <Text style={styles.rememberLabel}>Keep me logged in for a week</Text>
+        </TouchableOpacity>
 
         <TouchableOpacity
           style={[styles.button, loading && styles.buttonDisabled]}
@@ -227,6 +242,18 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '700',
     color: '#ffffff',
+    fontFamily: 'Poppins',
+  },
+  rememberRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    marginBottom: 8,
+    marginTop: 4,
+  },
+  rememberLabel: {
+    fontSize: 14,
+    color: '#94a3b8',
     fontFamily: 'Poppins',
   },
 });
