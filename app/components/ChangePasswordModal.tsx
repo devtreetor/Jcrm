@@ -92,8 +92,10 @@ export default function ChangePasswordModal({ visible, onClose }: ChangePassword
   if (!visible) return null;
 
   // @ts-ignore
+  const fixedStyle: any = { position: 'fixed', top: 0, bottom: 0, left: 0, right: 0, zIndex: 9999 };
+
   return (
-    <View style={[styles.overlay, { position: 'fixed', top: 0, bottom: 0, left: 0, right: 0, zIndex: 9999 }]}>
+    <View style={[styles.overlay, fixedStyle]}>
       <View style={styles.modal}>
         <View style={styles.header}>
           <Text style={styles.title}>Change Password</Text>
