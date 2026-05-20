@@ -104,6 +104,27 @@ export default function AdminUsersPage() {
     }
   };
 
+  const deleteUser = async (user: User) => {
+    if (!window.confirm(`Are you sure you want to delete ${user.full_name}? This action cannot be undone.`)) {
+      return;
+    }
+    
+    try {
+      setError('');
+      const res = await fetch(`${API_ROUTES.USERS}/${user.id}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${getToken()}` },
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || 'Failed to delete user');
+      
+      setSuccess(`${user.full_name} has been deleted.`);
+      fetchUsers();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to delete user');
+    }
+  };
+
   const startEdit = (user: User) => {
     setEditingUserId(user.id);
     setEditName(user.full_name);
@@ -338,6 +359,12 @@ export default function AdminUsersPage() {
                   >
                     <Text style={styles.toggleText}>{user.is_active ? 'Active' : 'Inactive'}</Text>
                   </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.deleteBtn}
+                    onPress={() => deleteUser(user)}
+                  >
+                    <Text style={styles.deleteBtnText}>🗑 Delete</Text>
+                  </TouchableOpacity>
                 </View>
               </>
             )}
@@ -393,6 +420,8 @@ const styles = StyleSheet.create({
   toggleBtnActive: { backgroundColor: 'rgba(34,197,94,0.15)' },
   toggleBtnInactive: { backgroundColor: 'rgba(239,68,68,0.15)' },
   toggleText: { fontSize: 11, fontWeight: '600', color: '#cbd5e1' },
+  deleteBtn: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: 12, backgroundColor: 'rgba(239,68,68,0.15)' },
+  deleteBtnText: { fontSize: 11, fontWeight: '600', color: '#ef4444' },
   editContainer: { flex: 1 },
   editHeaderRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 },
   editCancelText: { fontSize: 13, color: '#ef4444', fontWeight: '600' },

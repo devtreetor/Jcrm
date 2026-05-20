@@ -40,3 +40,38 @@ export async function PATCH(
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }
+
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const role = request.headers.get('x-user-role');
+
+    if (role !== 'admin') {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    }
+
+    const supabase = getSupabaseServiceClient();
+
+    const existing = await getUserById(supabase, params.id);
+    if (!existing) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+    }
+
+    // Delete auth user using admin API (this automatically handles public.users if there's a cascade, but we'll do both to be safe)
+    const { error: authError } = await supabase.auth.admin.deleteUser(params.id);
+    if (authError) {
+      console.warn('Could not delete auth user:', authError.message);
+    }
+
+    const { error: dbError } = await supabase.from('users').delete().eq('id', params.id);
+    if (dbError) throw dbError;
+
+    return NextResponse.json({ success: true });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : 'Failed to delete user';
+    console.error('DELETE /api/users/[id] error:', message);
+    return NextResponse.json({ error: message }, { status: 500 });
+  }
+}
