@@ -5,7 +5,7 @@ import {
   View, Text, TextInput, ScrollView, TouchableOpacity, FlatList, Pressable,
   StyleSheet, ActivityIndicator, Image,
 } from 'react-native';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import {
   API_ROUTES, LEAD_STAGES, STAGE_LABELS, STAGE_COLORS,
   CALL_STATUSES, CALL_STATUS_LABELS,
@@ -21,6 +21,7 @@ interface PhotoPreview {
 
 export default function CallerLeadDetailPage() {
   const params = useParams();
+  const router = useRouter();
   const leadId = params.id as string;
   const [lead, setLead] = useState<Lead | null>(null);
   const [calls, setCalls] = useState<CallLog[]>([]);
@@ -230,6 +231,9 @@ export default function CallerLeadDetailPage() {
   return (
     <View style={styles.container}>
       <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContent}>
+        <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
+          <Text style={styles.backBtnText}>← Back to Leads</Text>
+        </TouchableOpacity>
         <View style={styles.headerRow}>
           <View style={styles.titleContainer}>
             <Text style={styles.title}>{lead.school_name}</Text>
@@ -552,7 +556,9 @@ export default function CallerLeadDetailPage() {
 const styles = StyleSheet.create({
   container: { flex: 1 },
   scroll: { flex: 1 },
-  scrollContent: { paddingBottom: 80 },
+  scrollContent: { paddingBottom: 80, padding: 20 },
+  backBtn: { marginBottom: 12, alignSelf: 'flex-start', paddingVertical: 4, paddingRight: 16 },
+  backBtnText: { color: '#94a3b8', fontSize: 14, fontWeight: '600', fontFamily: 'Poppins' },
   headerRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 4 },
   titleContainer: { flex: 1, paddingRight: 12 },
   title: { fontSize: 22, fontWeight: '700', color: '#f8fafc', marginBottom: 4 },

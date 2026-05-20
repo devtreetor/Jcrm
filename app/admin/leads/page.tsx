@@ -14,9 +14,21 @@ export default function AdminLeadsPage() {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [count, setCount] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState('');
-  const [stageFilter, setStageFilter] = useState<LeadStage | ''>('');
-  const [page, setPage] = useState(1);
+  const [search, setSearch] = useState(() => {
+    if (typeof window !== 'undefined') return sessionStorage.getItem('adminLeadsSearch') || '';
+    return '';
+  });
+  const [stageFilter, setStageFilter] = useState<LeadStage | ''>(() => {
+    if (typeof window !== 'undefined') return (sessionStorage.getItem('adminLeadsStage') as LeadStage) || '';
+    return '';
+  });
+  const [page, setPage] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const saved = sessionStorage.getItem('adminLeadsPage');
+      return saved ? parseInt(saved, 10) : 1;
+    }
+    return 1;
+  });
   const [error, setError] = useState('');
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [selectMode, setSelectMode] = useState(false);
@@ -45,6 +57,14 @@ export default function AdminLeadsPage() {
   }, [page, search, stageFilter]);
 
   useEffect(() => { fetchLeads(); }, [fetchLeads]);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      sessionStorage.setItem('adminLeadsSearch', search);
+      sessionStorage.setItem('adminLeadsStage', stageFilter);
+      sessionStorage.setItem('adminLeadsPage', page.toString());
+    }
+  }, [search, stageFilter, page]);
 
   const toggleSelect = (id: string) => {
     setSelectedIds((prev) => {

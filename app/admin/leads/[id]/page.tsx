@@ -4,7 +4,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import {
   View, Text, ScrollView, TouchableOpacity, StyleSheet, ActivityIndicator, TextInput
 } from 'react-native';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { STAGE_LABELS, STAGE_COLORS, LEAD_STAGES, API_ROUTES, CALL_STATUSES, CALL_STATUS_LABELS } from '@/lib/constants';
 import EditLeadModal from '@/app/components/EditLeadModal';
 import type { Lead, LeadStage } from '@/types/lead.types';
@@ -13,6 +13,7 @@ import type { User } from '@/types/user.types';
 
 export default function AdminLeadDetailPage() {
   const params = useParams();
+  const router = useRouter();
   const leadId = params.id as string;
   const [lead, setLead] = useState<Lead | null>(null);
   const [calls, setCalls] = useState<CallLog[]>([]);
@@ -183,6 +184,9 @@ export default function AdminLeadDetailPage() {
   return (
     <View style={styles.container}>
       <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContent}>
+        <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
+          <Text style={styles.backBtnText}>← Back to Leads</Text>
+        </TouchableOpacity>
         <View style={styles.headerRow}>
         <View style={styles.titleContainer}>
           <Text style={styles.title}>{lead.school_name}</Text>
@@ -392,6 +396,8 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#0b1120' },
   scroll: { flex: 1 },
   scrollContent: { padding: 20, paddingBottom: 40 },
+  backBtn: { marginBottom: 12, alignSelf: 'flex-start', paddingVertical: 4, paddingRight: 16 },
+  backBtnText: { color: '#94a3b8', fontSize: 14, fontWeight: '600', fontFamily: 'Poppins' },
   headerRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 6 },
   titleContainer: { flex: 1, paddingRight: 12 },
   title: { 
