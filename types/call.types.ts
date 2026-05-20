@@ -22,6 +22,7 @@ export interface CallLog {
   callback_date: string | null;
   called_at: string;
   photos?: CallPhoto[];
+  caller?: { full_name: string; role: string };
 }
 
 export interface CreateCallLogPayload {

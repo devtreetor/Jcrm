@@ -2,10 +2,10 @@
 
 import React, { useEffect, useState, useCallback } from 'react';
 import {
-  View, Text, ScrollView, TouchableOpacity, StyleSheet, ActivityIndicator,
+  View, Text, ScrollView, TouchableOpacity, StyleSheet, ActivityIndicator, TextInput
 } from 'react-native';
 import { useParams } from 'next/navigation';
-import { STAGE_LABELS, STAGE_COLORS, LEAD_STAGES, API_ROUTES } from '@/lib/constants';
+import { STAGE_LABELS, STAGE_COLORS, LEAD_STAGES, API_ROUTES, CALL_STATUSES, CALL_STATUS_LABELS } from '@/lib/constants';
 import EditLeadModal from '@/app/components/EditLeadModal';
 import type { Lead, LeadStage } from '@/types/lead.types';
 import type { CallLog } from '@/types/call.types';
@@ -25,6 +25,10 @@ export default function AdminLeadDetailPage() {
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
   const [showEditModal, setShowEditModal] = useState(false);
+  const [callStatus, setCallStatus] = useState('answered');
+  const [callNotes, setCallNotes] = useState('');
+  const [loggingCall, setLoggingCall] = useState(false);
+  const [showCallForm, setShowCallForm] = useState(false);
 
   const getToken = () => localStorage.getItem('token') || '';
 
@@ -147,12 +151,39 @@ export default function AdminLeadDetailPage() {
     }
   };
 
+  const handleLogCall = async () => {
+    try {
+      setLoggingCall(true);
+      setError('');
+      setNotice('');
+      const res = await fetch(`${API_ROUTES.LEADS}/${leadId}/calls`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${getToken()}`,
+        },
+        body: JSON.stringify({ status: callStatus, notes: callNotes.trim() }),
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error);
+      setNotice('Call logged successfully');
+      setShowCallForm(false);
+      setCallNotes('');
+      fetchCalls();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to log call');
+    } finally {
+      setLoggingCall(false);
+    }
+  };
+
   if (loading) return <ActivityIndicator color="#60a5fa" size="large" style={{ marginTop: 48 }} />;
   if (!lead) return <Text style={styles.errorText}>Lead not found</Text>;
 
   return (
-    <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContent}>
-      <View style={styles.headerRow}>
+    <View style={styles.container}>
+      <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContent}>
+        <View style={styles.headerRow}>
         <View style={styles.titleContainer}>
           <Text style={styles.title}>{lead.school_name}</Text>
           <Text style={styles.meta}>
@@ -281,7 +312,51 @@ export default function AdminLeadDetailPage() {
       </View>
 
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Call History ({calls.length})</Text>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+          <Text style={[styles.sectionTitle, { marginBottom: 0 }]}>Call History ({calls.length})</Text>
+          <TouchableOpacity onPress={() => setShowCallForm(!showCallForm)}>
+            <Text style={{ color: '#E24E59', fontWeight: '700', fontSize: 14, fontFamily: 'Poppins' }}>
+              {showCallForm ? 'Cancel' : '+ Log Call'}
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={[{ backgroundColor: 'rgba(15, 23, 42, 0.5)', padding: 16, borderRadius: 14, marginBottom: 16, borderWidth: 1, borderColor: 'rgba(255, 255, 255, 0.05)' }, !showCallForm && { display: 'none' }]}>
+          <Text style={{ color: '#cbd5e1', fontSize: 13, marginBottom: 8, fontWeight: '600', fontFamily: 'Poppins' }}>Status</Text>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 16 }}>
+            {CALL_STATUSES.map(s => (
+              <TouchableOpacity
+                key={s}
+                style={[styles.stageChip, callStatus === s && { backgroundColor: '#E24E59', borderColor: '#E24E59' }]}
+                onPress={() => setCallStatus(s)}
+              >
+                <Text style={[styles.stageChipText, { color: callStatus === s ? '#fff' : '#94a3b8' }]}>
+                  {CALL_STATUS_LABELS[s as keyof typeof CALL_STATUS_LABELS]}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+          <Text style={{ color: '#cbd5e1', fontSize: 13, marginBottom: 8, fontWeight: '600', fontFamily: 'Poppins' }}>Notes</Text>
+          <TextInput
+            style={{
+              backgroundColor: 'rgba(15, 23, 42, 0.5)', color: '#f8fafc', borderRadius: 14, padding: 16,
+              minHeight: 80, textAlignVertical: 'top', marginBottom: 16, borderWidth: 1, borderColor: 'rgba(255, 255, 255, 0.1)', fontFamily: 'Poppins'
+            }}
+            placeholder="Enter call details..."
+            placeholderTextColor="#64748b"
+            multiline
+            value={callNotes}
+            onChangeText={setCallNotes}
+          />
+          <TouchableOpacity
+            style={[styles.assignBtn, { marginTop: 0 }, loggingCall && styles.assignBtnDisabled]}
+            onPress={handleLogCall}
+            disabled={loggingCall}
+          >
+            {loggingCall ? <ActivityIndicator color="#fff" /> : <Text style={styles.assignBtnText}>Save Call</Text>}
+          </TouchableOpacity>
+        </View>
+
         {calls.length === 0 ? (
           <Text style={styles.emptyText}>No calls logged yet</Text>
         ) : (
@@ -291,26 +366,31 @@ export default function AdminLeadDetailPage() {
                 <Text style={styles.callStatus}>{c.status.replace('_', ' ')}</Text>
                 <Text style={styles.callDate}>{new Date(c.called_at).toLocaleDateString()}</Text>
               </View>
+              {c.caller ? (
+                <Text style={styles.callAuthor}>
+                  By: {c.caller.full_name} ({c.caller.role === 'team_lead' ? 'Director Sales' : c.caller.role === 'caller' ? 'Sales Executive' : 'Admin'})
+                </Text>
+              ) : null}
               {c.notes ? <Text style={styles.callNotes}>{c.notes}</Text> : null}
             </View>
           ))
         )}
       </View>
-
-      {showEditModal && (
-        <EditLeadModal
-          lead={lead}
-          visible={showEditModal}
-          onClose={() => setShowEditModal(false)}
-          onUpdate={setLead}
-        />
-      )}
     </ScrollView>
+
+    <EditLeadModal
+      lead={lead}
+      visible={showEditModal}
+      onClose={() => setShowEditModal(false)}
+      onUpdate={setLead}
+    />
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  scroll: { flex: 1, backgroundColor: '#0b1120' },
+  container: { flex: 1, backgroundColor: '#0b1120' },
+  scroll: { flex: 1 },
   scrollContent: { padding: 20, paddingBottom: 40 },
   headerRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 6 },
   titleContainer: { flex: 1, paddingRight: 12 },
@@ -465,6 +545,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Poppins'
   },
   callDate: { fontSize: 12, color: '#64748b', fontFamily: 'Poppins' },
+  callAuthor: { fontSize: 12, color: '#94a3b8', fontStyle: 'italic', marginTop: 2, marginBottom: 4, fontFamily: 'Poppins' },
   callNotes: { fontSize: 14, color: '#cbd5e1', marginTop: 4, fontFamily: 'Poppins', lineHeight: 20 },
   emptyText: { fontSize: 14, color: '#64748b', textAlign: 'center', paddingVertical: 20, fontFamily: 'Poppins' },
 });

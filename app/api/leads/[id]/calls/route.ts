@@ -49,9 +49,9 @@ export async function POST(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    if (role !== 'caller' && role !== 'admin') {
+    if (role !== 'caller' && role !== 'admin' && role !== 'team_lead') {
       return NextResponse.json(
-        { error: 'Only callers and admins can log calls' },
+        { error: 'You do not have permission to log calls' },
         { status: 403 }
       );
     }
@@ -72,6 +72,13 @@ export async function POST(
     if (role === 'caller' && lead.assigned_cl_id !== userId) {
       return NextResponse.json(
         { error: 'You can only log calls for leads assigned to you' },
+        { status: 403 }
+      );
+    }
+
+    if (role === 'team_lead' && lead.assigned_tl_id !== userId) {
+      return NextResponse.json(
+        { error: 'You can only log calls for leads assigned to your team' },
         { status: 403 }
       );
     }

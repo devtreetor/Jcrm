@@ -75,11 +75,13 @@ export default function EditLeadModal({ lead, visible, onClose, onUpdate }: Edit
     }
   };
 
+  if (!visible) return null;
+
+  // @ts-ignore
   return (
-    <Modal visible={visible} transparent animationType="fade">
-      <View style={styles.overlay}>
-        <View style={styles.modalContent}>
-          <Text style={styles.title}>Edit Lead Details</Text>
+    <View style={[styles.overlay, { position: 'fixed', top: 0, bottom: 0, left: 0, right: 0, zIndex: 9999 }]}>
+      <View style={styles.modalContent}>
+        <Text style={styles.title}>Edit Lead Details</Text>
           
           <ScrollView style={styles.scroll} showsVerticalScrollIndicator={false}>
             {error ? (
@@ -202,10 +204,9 @@ export default function EditLeadModal({ lead, visible, onClose, onUpdate }: Edit
                 <Text style={styles.saveBtnText}>Save Changes</Text>
               )}
             </TouchableOpacity>
-          </View>
         </View>
       </View>
-    </Modal>
+    </View>
   );
 }
 

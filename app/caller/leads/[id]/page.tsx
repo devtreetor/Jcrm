@@ -335,6 +335,11 @@ export default function CallerLeadDetailPage() {
                     <Text style={styles.callStatusText}>{item.status.replace('_', ' ')}</Text>
                     <Text style={styles.callDate}>{new Date(item.called_at).toLocaleDateString()}</Text>
                   </View>
+                  {item.caller ? (
+                    <Text style={styles.callAuthor}>
+                      By: {item.caller.full_name} ({item.caller.role === 'team_lead' ? 'Director Sales' : item.caller.role === 'caller' ? 'Sales Executive' : 'Admin'})
+                    </Text>
+                  ) : null}
                   {item.notes ? <Text style={styles.callNotes}>{item.notes}</Text> : null}
                   {item.callback_date ? (
                     <Text style={styles.callbackText}>
@@ -534,14 +539,12 @@ export default function CallerLeadDetailPage() {
         </Pressable>
       )}
 
-      {showEditModal && (
-        <EditLeadModal
-          lead={lead}
-          visible={showEditModal}
-          onClose={() => setShowEditModal(false)}
-          onUpdate={setLead}
-        />
-      )}
+      <EditLeadModal
+        lead={lead}
+        visible={showEditModal}
+        onClose={() => setShowEditModal(false)}
+        onUpdate={setLead}
+      />
     </View>
   );
 }
@@ -582,6 +585,7 @@ const styles = StyleSheet.create({
   callHeader: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 },
   callStatusText: { fontSize: 14, color: '#22c55e', fontWeight: '600', textTransform: 'capitalize' },
   callDate: { fontSize: 12, color: '#64748b' },
+  callAuthor: { fontSize: 12, color: '#94a3b8', fontStyle: 'italic', marginTop: 2, marginBottom: 4 },
   callNotes: { fontSize: 13, color: '#cbd5e1', marginTop: 4 },
   callbackText: { fontSize: 12, color: '#f59e0b', marginTop: 4 },
   // Call history photo thumbnails

@@ -89,17 +89,14 @@ export default function ChangePasswordModal({ visible, onClose }: ChangePassword
     }
   }, [currentPassword, newPassword, confirmPassword, handleClose]);
 
+  if (!visible) return null;
+
+  // @ts-ignore
   return (
-    <Modal
-      visible={visible}
-      transparent
-      animationType="fade"
-      onRequestClose={handleClose}
-    >
-      <View style={styles.overlay}>
-        <View style={styles.modal}>
-          <View style={styles.header}>
-            <Text style={styles.title}>Change Password</Text>
+    <View style={[styles.overlay, { position: 'fixed', top: 0, bottom: 0, left: 0, right: 0, zIndex: 9999 }]}>
+      <View style={styles.modal}>
+        <View style={styles.header}>
+          <Text style={styles.title}>Change Password</Text>
             <TouchableOpacity onPress={handleClose} style={styles.closeBtn}>
               <Text style={styles.closeBtnText}>✕</Text>
             </TouchableOpacity>
@@ -165,9 +162,8 @@ export default function ChangePasswordModal({ visible, onClose }: ChangePassword
               <Text style={styles.submitBtnText}>Update Password</Text>
             )}
           </TouchableOpacity>
-        </View>
       </View>
-    </Modal>
+    </View>
   );
 }
 

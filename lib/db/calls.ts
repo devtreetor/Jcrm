@@ -8,7 +8,7 @@ export async function getCallLogsByLead(
   try {
     const { data, error } = await supabase
       .from('call_logs')
-      .select('*')
+      .select('*, caller:caller_id(full_name, role)')
       .eq('lead_id', leadId)
       .order('called_at', { ascending: false });
 
