@@ -8,18 +8,29 @@ import {
 import { useRouter } from 'next/navigation';
 import { API_ROUTES, LEAD_STAGES, STAGE_LABELS, STAGE_COLORS } from '@/lib/constants';
 import type { Lead, LeadStage } from '@/types/lead.types';
+import type { User } from '@/types/user.types';
 
 export default function AdminLeadsPage() {
   const router = useRouter();
   const [leads, setLeads] = useState<Lead[]>([]);
   const [count, setCount] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [teamLeads, setTeamLeads] = useState<User[]>([]);
+  const [callers, setCallers] = useState<User[]>([]);
   const [search, setSearch] = useState(() => {
     if (typeof window !== 'undefined') return sessionStorage.getItem('adminLeadsSearch') || '';
     return '';
   });
   const [stageFilter, setStageFilter] = useState<LeadStage | ''>(() => {
     if (typeof window !== 'undefined') return (sessionStorage.getItem('adminLeadsStage') as LeadStage) || '';
+    return '';
+  });
+  const [selectedTlId, setSelectedTlId] = useState<string>(() => {
+    if (typeof window !== 'undefined') return sessionStorage.getItem('adminLeadsTl') || '';
+    return '';
+  });
+  const [selectedClId, setSelectedClId] = useState<string>(() => {
+    if (typeof window !== 'undefined') return sessionStorage.getItem('adminLeadsCl') || '';
     return '';
   });
   const [page, setPage] = useState(() => {
@@ -33,14 +44,37 @@ export default function AdminLeadsPage() {
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [selectMode, setSelectMode] = useState(false);
 
+  const fetchUsers = useCallback(async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const res = await fetch(API_ROUTES.USERS, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const json = await res.json();
+      if (res.ok && json.data) {
+        const allUsers = json.data as User[];
+        setTeamLeads(allUsers.filter((u) => u.role === 'team_lead' && u.is_active));
+        setCallers(allUsers.filter((u) => u.role === 'caller' && u.is_active));
+      }
+    } catch (err) {
+      console.error('Failed to load users for filter:', err);
+    }
+  }, []);
+
   const fetchLeads = useCallback(async () => {
     try {
       setLoading(true);
       setError('');
       const token = localStorage.getItem('token');
       const params = new URLSearchParams({ page: String(page), limit: '20' });
-      if (search) params.set('search', search);
+      
+      const querySearch = search.trim();
+      if (querySearch && querySearch.length >= 3) {
+        params.set('search', querySearch);
+      }
       if (stageFilter) params.set('stage', stageFilter);
+      if (selectedTlId) params.set('assigned_tl_id', selectedTlId);
+      if (selectedClId) params.set('assigned_cl_id', selectedClId);
 
       const res = await fetch(`${API_ROUTES.LEADS}?${params}`, {
         headers: { Authorization: `Bearer ${token}` },
@@ -54,7 +88,11 @@ export default function AdminLeadsPage() {
     } finally {
       setLoading(false);
     }
-  }, [page, search, stageFilter]);
+  }, [page, search, stageFilter, selectedTlId, selectedClId]);
+
+  useEffect(() => {
+    fetchUsers();
+  }, [fetchUsers]);
 
   useEffect(() => { fetchLeads(); }, [fetchLeads]);
 
@@ -62,9 +100,28 @@ export default function AdminLeadsPage() {
     if (typeof window !== 'undefined') {
       sessionStorage.setItem('adminLeadsSearch', search);
       sessionStorage.setItem('adminLeadsStage', stageFilter);
+      sessionStorage.setItem('adminLeadsTl', selectedTlId);
+      sessionStorage.setItem('adminLeadsCl', selectedClId);
       sessionStorage.setItem('adminLeadsPage', page.toString());
     }
-  }, [search, stageFilter, page]);
+  }, [search, stageFilter, selectedTlId, selectedClId, page]);
+
+  const handleTlChange = (tlId: string) => {
+    setSelectedTlId(tlId);
+    setPage(1);
+    
+    // Clear caller if they report to a different TL
+    if (tlId && tlId !== 'unassigned' && selectedClId && selectedClId !== 'unassigned') {
+      const caller = callers.find(c => c.id === selectedClId);
+      if (caller && caller.team_lead_id !== tlId) {
+        setSelectedClId('');
+      }
+    }
+  };
+
+  const filteredCallers = selectedTlId && selectedTlId !== 'unassigned'
+    ? callers.filter((c) => c.team_lead_id === selectedTlId)
+    : callers;
 
   const toggleSelect = (id: string) => {
     setSelectedIds((prev) => {
@@ -130,6 +187,8 @@ export default function AdminLeadsPage() {
         onChangeText={(t) => { setSearch(t); setPage(1); }}
       />
 
+      {/* Stage Filter */}
+      <Text style={styles.filterLabel}>Stage</Text>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterRow}>
         <TouchableOpacity
           style={[styles.filterPill, !stageFilter && styles.filterPillActive]}
@@ -145,6 +204,62 @@ export default function AdminLeadsPage() {
           >
             <Text style={[styles.filterPillText, stageFilter === s && styles.filterPillTextActive]}>
               {STAGE_LABELS[s]}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
+
+      {/* Team Lead Filter */}
+      <Text style={styles.filterLabel}>Director Sales / Team Lead</Text>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterRow}>
+        <TouchableOpacity
+          style={[styles.filterPill, !selectedTlId && styles.filterPillActive]}
+          onPress={() => handleTlChange('')}
+        >
+          <Text style={[styles.filterPillText, !selectedTlId && styles.filterPillTextActive]}>All</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.filterPill, selectedTlId === 'unassigned' && styles.filterPillActive]}
+          onPress={() => handleTlChange('unassigned')}
+        >
+          <Text style={[styles.filterPillText, selectedTlId === 'unassigned' && styles.filterPillTextActive]}>Unassigned</Text>
+        </TouchableOpacity>
+        {teamLeads.map((tl) => (
+          <TouchableOpacity
+            key={tl.id}
+            style={[styles.filterPill, selectedTlId === tl.id && styles.filterPillActive]}
+            onPress={() => handleTlChange(tl.id)}
+          >
+            <Text style={[styles.filterPillText, selectedTlId === tl.id && styles.filterPillTextActive]}>
+              {tl.full_name}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
+
+      {/* Caller Filter */}
+      <Text style={styles.filterLabel}>Sales Executive</Text>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterRow}>
+        <TouchableOpacity
+          style={[styles.filterPill, !selectedClId && styles.filterPillActive]}
+          onPress={() => { setSelectedClId(''); setPage(1); }}
+        >
+          <Text style={[styles.filterPillText, !selectedClId && styles.filterPillTextActive]}>All</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.filterPill, selectedClId === 'unassigned' && styles.filterPillActive]}
+          onPress={() => { setSelectedClId('unassigned'); setPage(1); }}
+        >
+          <Text style={[styles.filterPillText, selectedClId === 'unassigned' && styles.filterPillTextActive]}>Unassigned</Text>
+        </TouchableOpacity>
+        {filteredCallers.map((cl) => (
+          <TouchableOpacity
+            key={cl.id}
+            style={[styles.filterPill, selectedClId === cl.id && styles.filterPillActive]}
+            onPress={() => { setSelectedClId(cl.id); setPage(1); }}
+          >
+            <Text style={[styles.filterPillText, selectedClId === cl.id && styles.filterPillTextActive]}>
+              {cl.full_name}
             </Text>
           </TouchableOpacity>
         ))}
@@ -203,6 +318,16 @@ export default function AdminLeadsPage() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#0b1120', padding: 20 },
+  filterLabel: {
+    fontSize: 12,
+    color: '#64748b',
+    marginBottom: 8,
+    marginTop: 6,
+    fontWeight: '700',
+    fontFamily: 'Poppins',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
   headerRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 },
   title: { fontSize: 24, fontWeight: '800', color: '#f8fafc', fontFamily: 'Montserrat' },
   cancelSelect: { fontSize: 14, color: '#E24E59', fontWeight: '600' },

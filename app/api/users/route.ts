@@ -1,19 +1,29 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createUserSchema } from '@/lib/schemas/user.schema';
 import { getSupabaseServiceClient } from '@/lib/supabase/server';
-import { getUsers, createUser } from '@/lib/db/users';
+import { getUsers, createUser, getUsersByTeamLead } from '@/lib/db/users';
 import type { CreateUserPayload } from '@/types/user.types';
 
 export async function GET(request: NextRequest) {
   try {
     const role = request.headers.get('x-user-role');
+    const userId = request.headers.get('x-user-id');
 
-    if (role !== 'admin') {
+    if (role !== 'admin' && role !== 'team_lead') {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
     const supabase = getSupabaseServiceClient();
-    const users = await getUsers(supabase);
+    let users;
+
+    if (role === 'admin') {
+      users = await getUsers(supabase);
+    } else {
+      if (!userId) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      }
+      users = await getUsersByTeamLead(supabase, userId);
+    }
 
     return NextResponse.json({ data: users });
   } catch (err) {

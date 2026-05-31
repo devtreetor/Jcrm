@@ -16,8 +16,8 @@ export const updateMultiStageSchema = z.object({
 
 export const leadFiltersSchema = z.object({
   stage: z.enum(LEAD_STAGES as unknown as [string, ...string[]]).optional(),
-  assigned_tl_id: z.string().uuid().optional(),
-  assigned_cl_id: z.string().uuid().optional(),
+  assigned_tl_id: z.union([z.string().uuid(), z.literal('unassigned')]).optional(),
+  assigned_cl_id: z.union([z.string().uuid(), z.literal('unassigned')]).optional(),
   city: z.string().optional(),
   state: z.string().optional(),
   search: z.string().optional(),

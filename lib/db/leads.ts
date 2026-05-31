@@ -18,10 +18,18 @@ export async function getLeads(
       query = query.eq('stage', filters.stage);
     }
     if (filters.assigned_tl_id) {
-      query = query.eq('assigned_tl_id', filters.assigned_tl_id);
+      if (filters.assigned_tl_id === 'unassigned') {
+        query = query.is('assigned_tl_id', null);
+      } else {
+        query = query.eq('assigned_tl_id', filters.assigned_tl_id);
+      }
     }
     if (filters.assigned_cl_id) {
-      query = query.eq('assigned_cl_id', filters.assigned_cl_id);
+      if (filters.assigned_cl_id === 'unassigned') {
+        query = query.is('assigned_cl_id', null);
+      } else {
+        query = query.eq('assigned_cl_id', filters.assigned_cl_id);
+      }
     }
     if (filters.city) {
       query = query.ilike('city', `%${filters.city}%`);
