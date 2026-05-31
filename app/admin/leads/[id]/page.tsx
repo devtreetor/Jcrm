@@ -32,6 +32,7 @@ export default function AdminLeadDetailPage() {
   const [showCallForm, setShowCallForm] = useState(false);
   const [mentionableUsers, setMentionableUsers] = useState<User[]>([]);
   const [selectedTaggedUsers, setSelectedTaggedUsers] = useState<string[]>([]);
+  const [deleting, setDeleting] = useState(false);
 
   const getToken = () => localStorage.getItem('token') || '';
 
@@ -175,6 +176,29 @@ export default function AdminLeadDetailPage() {
     }
   };
 
+  const handleDeleteLead = async () => {
+    if (!window.confirm('Are you sure you want to delete this lead? This action cannot be undone and will permanently remove all associated call logs and notifications.')) {
+      return;
+    }
+
+    try {
+      setDeleting(true);
+      setError('');
+      setNotice('');
+      const res = await fetch(`${API_ROUTES.LEADS}/${leadId}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${getToken()}` },
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || 'Failed to delete lead');
+      router.push('/admin/leads');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to delete lead');
+    } finally {
+      setDeleting(false);
+    }
+  };
+
   const handleLogCall = async () => {
     try {
       setLoggingCall(true);
@@ -223,9 +247,22 @@ export default function AdminLeadDetailPage() {
             {lead.board ? `• ${lead.board}` : ''}
           </Text>
         </View>
-        <TouchableOpacity style={styles.editBtn} onPress={() => setShowEditModal(true)}>
-          <Text style={styles.editBtnText}>Edit</Text>
-        </TouchableOpacity>
+        <View style={{ flexDirection: 'row', gap: 8 }}>
+          <TouchableOpacity style={styles.editBtn} onPress={() => setShowEditModal(true)}>
+            <Text style={styles.editBtnText}>Edit</Text>
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style={[styles.deleteBtn, deleting && styles.deleteBtnDisabled]} 
+            onPress={handleDeleteLead}
+            disabled={deleting}
+          >
+            {deleting ? (
+              <ActivityIndicator color="var(--color-danger)" size="small" />
+            ) : (
+              <Text style={styles.deleteBtnText}>Delete</Text>
+            )}
+          </TouchableOpacity>
+        </View>
       </View>
 
       {error ? <View style={styles.errorBox}><Text style={styles.errorText}>{error}</Text></View> : null}
@@ -478,6 +515,9 @@ const styles = StyleSheet.create({
   },
   editBtn: { backgroundColor: 'rgba(18,112,227,0.2)', paddingHorizontal: 16, paddingVertical: 8, borderRadius: 8, borderWidth: 1, borderColor: 'rgba(18,112,227,0.4)' },
   editBtnText: { color: 'var(--color-secondary)', fontSize: 13, fontWeight: '700', fontFamily: 'Poppins' },
+  deleteBtn: { backgroundColor: 'rgba(239,68,68,0.15)', paddingHorizontal: 16, paddingVertical: 8, borderRadius: 8, borderWidth: 1, borderColor: 'rgba(239,68,68,0.3)', justifyContent: 'center', alignItems: 'center' },
+  deleteBtnText: { color: 'var(--color-danger)', fontSize: 13, fontWeight: '700', fontFamily: 'Poppins' },
+  deleteBtnDisabled: { opacity: 0.6 },
   errorBox: { 
     backgroundColor: 'rgba(226,78,89,0.1)', 
     borderRadius: 12, 

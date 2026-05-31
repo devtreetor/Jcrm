@@ -223,3 +223,18 @@ export async function batchInsertLeads(
     throw new Error(message);
   }
 }
+
+export async function deleteLead(supabase: SupabaseClient, id: string): Promise<void> {
+  try {
+    const { error } = await supabase
+      .from('leads')
+      .delete()
+      .eq('id', id);
+
+    if (error) throw error;
+  } catch (err) {
+    const message = err instanceof Error ? err.message : 'Failed to delete lead';
+    throw new Error(message);
+  }
+}
+
