@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, Switch } from 'react-native';
 import { useRouter } from 'next/navigation';
 import { API_ROUTES, ROUTES } from '@/lib/constants';
@@ -13,6 +13,15 @@ export default function LoginPage() {
   const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const savedTheme = localStorage.getItem('theme') || 'brand';
+      const root = window.document.documentElement;
+      root.classList.remove('theme-dark', 'theme-light', 'theme-brand');
+      root.classList.add(`theme-${savedTheme}`);
+    }
+  }, []);
 
   const handleLogin = useCallback(async () => {
     if (!email.trim() || !password.trim()) {
@@ -137,16 +146,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     minHeight: '100vh' as unknown as number,
     padding: 16,
-    backgroundColor: '#0b1120', // Deep Navy
+    backgroundColor: 'var(--color-surface)',
   },
   card: {
     width: '100%',
     maxWidth: 420,
     padding: 40,
-    backgroundColor: 'rgba(23, 31, 47, 0.8)', // Glassmorphism
+    backgroundColor: 'var(--color-surface-light)',
     borderRadius: 24,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
+    borderColor: 'var(--color-border)',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 12 },
     shadowOpacity: 0.4,
@@ -162,27 +171,27 @@ const styles = StyleSheet.create({
   logoJ: {
     fontSize: 42,
     fontWeight: '800',
-    color: '#E24E59', // Jigyasu Red
+    color: 'var(--color-primary)',
     fontFamily: 'Montserrat',
   },
   logoText: {
     fontSize: 36,
     fontWeight: '700',
-    color: '#f8fafc',
+    color: 'var(--color-text-primary)',
     fontFamily: 'Montserrat',
     marginLeft: -2,
   },
   title: {
     fontSize: 28,
     fontWeight: '700',
-    color: '#f8fafc',
+    color: 'var(--color-text-primary)',
     textAlign: 'center',
     marginBottom: 8,
     fontFamily: 'Montserrat',
   },
   subtitle: {
     fontSize: 16,
-    color: '#94a3b8',
+    color: 'var(--color-text-secondary)',
     textAlign: 'center',
     marginBottom: 40,
     fontFamily: 'Poppins',
@@ -196,7 +205,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   errorText: {
-    color: '#E24E59',
+    color: 'var(--color-primary)',
     fontSize: 14,
     textAlign: 'center',
     fontFamily: 'Poppins',
@@ -207,36 +216,36 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#cbd5e1',
+    color: 'var(--color-text-primary)',
     marginBottom: 8,
     fontFamily: 'Poppins',
   },
   input: {
     height: 54,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
+    borderColor: 'var(--color-border)',
     borderRadius: 14,
     paddingHorizontal: 20,
     fontSize: 16,
-    color: '#f8fafc',
-    backgroundColor: 'rgba(15, 23, 42, 0.5)',
+    color: 'var(--color-text-primary)',
+    backgroundColor: 'rgba(0, 0, 0, 0.1)',
     fontFamily: 'Poppins',
   },
   button: {
     height: 56,
-    backgroundColor: '#E24E59',
+    backgroundColor: 'var(--color-primary)',
     borderRadius: 14,
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 12,
-    shadowColor: '#E24E59',
+    shadowColor: 'var(--color-primary)',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
   },
   buttonDisabled: {
     opacity: 0.6,
-    backgroundColor: '#94a3b8',
+    backgroundColor: 'var(--color-text-muted)',
   },
   buttonText: {
     fontSize: 18,
@@ -253,7 +262,7 @@ const styles = StyleSheet.create({
   },
   rememberLabel: {
     fontSize: 14,
-    color: '#94a3b8',
+    color: 'var(--color-text-secondary)',
     fontFamily: 'Poppins',
   },
 });

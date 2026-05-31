@@ -246,7 +246,7 @@ export default function AdminLeadDetailPage() {
               onPress={() => handleStageChange(s)}
               style={[styles.stageChip, lead.stage === s && { backgroundColor: STAGE_COLORS[s] + '30' }]}
             >
-              <Text style={[styles.stageChipText, { color: lead.stage === s ? STAGE_COLORS[s] : '#94a3b8' }]}>
+              <Text style={[styles.stageChipText, { color: lead.stage === s ? STAGE_COLORS[s] : 'var(--color-text-secondary)' }]}>
                 {STAGE_LABELS[s]}
               </Text>
             </TouchableOpacity>
@@ -319,32 +319,32 @@ export default function AdminLeadDetailPage() {
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
           <Text style={[styles.sectionTitle, { marginBottom: 0 }]}>Call History ({calls.length})</Text>
           <TouchableOpacity onPress={() => setShowCallForm(!showCallForm)}>
-            <Text style={{ color: '#E24E59', fontWeight: '700', fontSize: 14, fontFamily: 'Poppins' }}>
+            <Text style={{ color: 'var(--color-primary)', fontWeight: '700', fontSize: 14, fontFamily: 'Poppins' }}>
               {showCallForm ? 'Cancel' : '+ Log Call'}
             </Text>
           </TouchableOpacity>
         </View>
 
-        <View style={[{ backgroundColor: 'rgba(15, 23, 42, 0.5)', padding: 16, borderRadius: 14, marginBottom: 16, borderWidth: 1, borderColor: 'rgba(255, 255, 255, 0.05)' }, !showCallForm && { display: 'none' }]}>
-          <Text style={{ color: '#cbd5e1', fontSize: 13, marginBottom: 8, fontWeight: '600', fontFamily: 'Poppins' }}>Status</Text>
+        <View style={[{ backgroundColor: 'rgba(15, 23, 42, 0.5)', padding: 16, borderRadius: 14, marginBottom: 16, borderWidth: 1, borderColor: 'var(--color-border)' }, !showCallForm && { display: 'none' }]}>
+          <Text style={{ color: 'var(--color-text-secondary)', fontSize: 13, marginBottom: 8, fontWeight: '600', fontFamily: 'Poppins' }}>Status</Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 16 }}>
             {CALL_STATUSES.map(s => (
               <TouchableOpacity
                 key={s}
-                style={[styles.stageChip, callStatus === s && { backgroundColor: '#E24E59', borderColor: '#E24E59' }]}
+                style={[styles.stageChip, callStatus === s && { backgroundColor: 'var(--color-primary)', borderColor: 'var(--color-primary)' }]}
                 onPress={() => setCallStatus(s)}
               >
-                <Text style={[styles.stageChipText, { color: callStatus === s ? '#fff' : '#94a3b8' }]}>
+                <Text style={[styles.stageChipText, { color: callStatus === s ? '#fff' : 'var(--color-text-secondary)' }]}>
                   {CALL_STATUS_LABELS[s as keyof typeof CALL_STATUS_LABELS]}
                 </Text>
               </TouchableOpacity>
             ))}
           </ScrollView>
-          <Text style={{ color: '#cbd5e1', fontSize: 13, marginBottom: 8, fontWeight: '600', fontFamily: 'Poppins' }}>Notes</Text>
+          <Text style={{ color: 'var(--color-text-secondary)', fontSize: 13, marginBottom: 8, fontWeight: '600', fontFamily: 'Poppins' }}>Notes</Text>
           <TextInput
             style={{
-              backgroundColor: 'rgba(15, 23, 42, 0.5)', color: '#f8fafc', borderRadius: 14, padding: 16,
-              minHeight: 80, textAlignVertical: 'top', marginBottom: 16, borderWidth: 1, borderColor: 'rgba(255, 255, 255, 0.1)', fontFamily: 'Poppins'
+              backgroundColor: 'rgba(15, 23, 42, 0.5)', color: 'var(--color-text-primary)', borderRadius: 14, padding: 16,
+              minHeight: 80, textAlignVertical: 'top', marginBottom: 16, borderWidth: 1, borderColor: 'var(--color-border)', fontFamily: 'Poppins'
             }}
             placeholder="Enter call details..."
             placeholderTextColor="#64748b"
@@ -393,27 +393,27 @@ export default function AdminLeadDetailPage() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#0b1120' },
+  container: { flex: 1, backgroundColor: 'var(--color-surface)' },
   scroll: { flex: 1 },
   scrollContent: { padding: 20, paddingBottom: 40 },
   backBtn: { marginBottom: 12, alignSelf: 'flex-start', paddingVertical: 4, paddingRight: 16 },
-  backBtnText: { color: '#94a3b8', fontSize: 14, fontWeight: '600', fontFamily: 'Poppins' },
+  backBtnText: { color: 'var(--color-text-secondary)', fontSize: 14, fontWeight: '600', fontFamily: 'Poppins' },
   headerRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 6 },
   titleContainer: { flex: 1, paddingRight: 12 },
   title: { 
     fontSize: 26, 
     fontWeight: '800', 
-    color: '#f8fafc', 
+    color: 'var(--color-text-primary)', 
     fontFamily: 'Montserrat'
   },
   meta: { 
     fontSize: 15, 
-    color: '#94a3b8', 
+    color: 'var(--color-text-secondary)', 
     marginBottom: 24,
     fontFamily: 'Poppins'
   },
   editBtn: { backgroundColor: 'rgba(18,112,227,0.2)', paddingHorizontal: 16, paddingVertical: 8, borderRadius: 8, borderWidth: 1, borderColor: 'rgba(18,112,227,0.4)' },
-  editBtnText: { color: '#1270E3', fontSize: 13, fontWeight: '700', fontFamily: 'Poppins' },
+  editBtnText: { color: 'var(--color-secondary)', fontSize: 13, fontWeight: '700', fontFamily: 'Poppins' },
   errorBox: { 
     backgroundColor: 'rgba(226,78,89,0.1)', 
     borderRadius: 12, 
@@ -422,7 +422,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'rgba(226,78,89,0.2)',
   },
-  errorText: { color: '#E24E59', fontSize: 14, fontFamily: 'Poppins' },
+  errorText: { color: 'var(--color-primary)', fontSize: 14, fontFamily: 'Poppins' },
   noticeBox: { 
     backgroundColor: 'rgba(18,112,227,0.1)', 
     borderRadius: 12, 
@@ -431,19 +431,19 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'rgba(18,112,227,0.2)',
   },
-  noticeText: { color: '#1270E3', fontSize: 14, fontWeight: '600', fontFamily: 'Poppins' },
+  noticeText: { color: 'var(--color-secondary)', fontSize: 14, fontWeight: '600', fontFamily: 'Poppins' },
   section: { 
-    backgroundColor: '#171f2f', 
+    backgroundColor: 'var(--color-surface-light)', 
     borderRadius: 20, 
     padding: 20, 
     marginBottom: 20,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.05)',
+    borderColor: 'var(--color-border)',
   },
   sectionTitle: { 
     fontSize: 18, 
     fontWeight: '700', 
-    color: '#f8fafc', 
+    color: 'var(--color-text-primary)', 
     marginBottom: 16,
     fontFamily: 'Montserrat'
   },
@@ -456,7 +456,7 @@ const styles = StyleSheet.create({
     marginBottom: 12, 
     gap: 16,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.05)',
+    borderColor: 'var(--color-border)',
   },
   phoneIconBadge: {
     width: 44,
@@ -468,7 +468,7 @@ const styles = StyleSheet.create({
   },
   phoneLabel: { 
     fontSize: 12, 
-    color: '#94a3b8', 
+    color: 'var(--color-text-secondary)', 
     fontWeight: '600',
     fontFamily: 'Poppins',
     textTransform: 'uppercase',
@@ -476,7 +476,7 @@ const styles = StyleSheet.create({
   },
   phoneNumber: { 
     fontSize: 17, 
-    color: '#1270E3', 
+    color: 'var(--color-secondary)', 
     fontWeight: '700',
     fontFamily: 'Poppins',
     marginTop: 2,
@@ -484,7 +484,7 @@ const styles = StyleSheet.create({
   callNowText: {
     fontSize: 12,
     fontWeight: '700',
-    color: '#E24E59',
+    color: 'var(--color-primary)',
     fontFamily: 'Poppins',
   },
   stageChip: { 
@@ -494,12 +494,12 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(15, 23, 42, 0.5)', 
     marginRight: 8,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.05)',
+    borderColor: 'var(--color-border)',
   },
   stageChipText: { fontSize: 13, fontWeight: '700', fontFamily: 'Poppins' },
   dropdownLabel: { 
     fontSize: 13, 
-    color: '#94a3b8', 
+    color: 'var(--color-text-secondary)', 
     marginBottom: 10, 
     marginTop: 10,
     fontWeight: '600',
@@ -513,21 +513,21 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(15, 23, 42, 0.5)', 
     marginRight: 8,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.05)',
+    borderColor: 'var(--color-border)',
   },
   optionActive: { 
-    backgroundColor: '#1270E3',
-    borderColor: '#1270E3',
+    backgroundColor: 'var(--color-secondary)',
+    borderColor: 'var(--color-secondary)',
   },
-  optionText: { fontSize: 13, color: '#94a3b8', fontWeight: '600', fontFamily: 'Poppins' },
-  optionTextActive: { color: '#ffffff' },
+  optionText: { fontSize: 13, color: 'var(--color-text-secondary)', fontWeight: '600', fontFamily: 'Poppins' },
+  optionTextActive: { color: 'var(--color-text-primary)' },
   assignBtn: { 
-    backgroundColor: '#E24E59', 
+    backgroundColor: 'var(--color-primary)', 
     borderRadius: 14, 
     padding: 16, 
     alignItems: 'center', 
     marginTop: 16,
-    shadowColor: '#E24E59',
+    shadowColor: 'var(--color-primary)',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
@@ -540,18 +540,18 @@ const styles = StyleSheet.create({
     padding: 16, 
     marginBottom: 10,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.05)',
+    borderColor: 'var(--color-border)',
   },
   callHeader: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 6 },
   callStatus: { 
     fontSize: 15, 
-    color: '#1270E3', 
+    color: 'var(--color-secondary)', 
     fontWeight: '700', 
     textTransform: 'capitalize',
     fontFamily: 'Poppins'
   },
-  callDate: { fontSize: 12, color: '#64748b', fontFamily: 'Poppins' },
-  callAuthor: { fontSize: 12, color: '#94a3b8', fontStyle: 'italic', marginTop: 2, marginBottom: 4, fontFamily: 'Poppins' },
-  callNotes: { fontSize: 14, color: '#cbd5e1', marginTop: 4, fontFamily: 'Poppins', lineHeight: 20 },
-  emptyText: { fontSize: 14, color: '#64748b', textAlign: 'center', paddingVertical: 20, fontFamily: 'Poppins' },
+  callDate: { fontSize: 12, color: 'var(--color-text-muted)', fontFamily: 'Poppins' },
+  callAuthor: { fontSize: 12, color: 'var(--color-text-secondary)', fontStyle: 'italic', marginTop: 2, marginBottom: 4, fontFamily: 'Poppins' },
+  callNotes: { fontSize: 14, color: 'var(--color-text-secondary)', marginTop: 4, fontFamily: 'Poppins', lineHeight: 20 },
+  emptyText: { fontSize: 14, color: 'var(--color-text-muted)', textAlign: 'center', paddingVertical: 20, fontFamily: 'Poppins' },
 });

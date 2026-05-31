@@ -197,7 +197,7 @@ export default function TLLeadDetailPage() {
               onPress={() => handleStageChange(s)}
               style={[styles.stageChip, lead.stage === s && { backgroundColor: STAGE_COLORS[s] + '30' }]}
             >
-              <Text style={[styles.stageChipText, { color: lead.stage === s ? STAGE_COLORS[s] : '#94a3b8' }]}>
+              <Text style={[styles.stageChipText, { color: lead.stage === s ? STAGE_COLORS[s] : 'var(--color-text-secondary)' }]}>
                 {STAGE_LABELS[s]}
               </Text>
             </TouchableOpacity>
@@ -245,8 +245,8 @@ export default function TLLeadDetailPage() {
           </TouchableOpacity>
         </View>
 
-        <View style={[{ backgroundColor: '#0f172a', padding: 12, borderRadius: 8, marginBottom: 12 }, !showCallForm && { display: 'none' }]}>
-          <Text style={{ color: '#94a3b8', fontSize: 13, marginBottom: 8, fontWeight: '600' }}>Status</Text>
+        <View style={[{ backgroundColor: 'var(--color-surface)', padding: 12, borderRadius: 8, marginBottom: 12 }, !showCallForm && { display: 'none' }]}>
+          <Text style={{ color: 'var(--color-text-secondary)', fontSize: 13, marginBottom: 8, fontWeight: '600' }}>Status</Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 12 }}>
             {CALL_STATUSES.map(s => (
               <TouchableOpacity
@@ -254,16 +254,16 @@ export default function TLLeadDetailPage() {
                 style={[styles.stageChip, callStatus === s && { backgroundColor: '#7c3aed' }]}
                 onPress={() => setCallStatus(s)}
               >
-                <Text style={[styles.stageChipText, { color: callStatus === s ? '#fff' : '#94a3b8' }]}>
+                <Text style={[styles.stageChipText, { color: callStatus === s ? '#fff' : 'var(--color-text-secondary)' }]}>
                   {CALL_STATUS_LABELS[s as keyof typeof CALL_STATUS_LABELS]}
                 </Text>
               </TouchableOpacity>
             ))}
           </ScrollView>
-          <Text style={{ color: '#94a3b8', fontSize: 13, marginBottom: 8, fontWeight: '600' }}>Notes</Text>
+          <Text style={{ color: 'var(--color-text-secondary)', fontSize: 13, marginBottom: 8, fontWeight: '600' }}>Notes</Text>
           <TextInput
             style={{
-              backgroundColor: '#1e293b', color: '#f8fafc', borderRadius: 8, padding: 12,
+              backgroundColor: 'var(--color-surface-lighter)', color: 'var(--color-text-primary)', borderRadius: 8, padding: 12,
               minHeight: 80, textAlignVertical: 'top', marginBottom: 12
             }}
             placeholder="Enter call details..."
@@ -313,44 +313,44 @@ export default function TLLeadDetailPage() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#0b1120' },
+  container: { flex: 1, backgroundColor: 'var(--color-surface)' },
   scroll: { flex: 1 },
   scrollContent: { paddingBottom: 32, padding: 20 },
   backBtn: { marginBottom: 12, alignSelf: 'flex-start', paddingVertical: 4, paddingRight: 16 },
-  backBtnText: { color: '#94a3b8', fontSize: 14, fontWeight: '600', fontFamily: 'Poppins' },
+  backBtnText: { color: 'var(--color-text-secondary)', fontSize: 14, fontWeight: '600', fontFamily: 'Poppins' },
   headerRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 4 },
   titleContainer: { flex: 1, paddingRight: 12 },
-  title: { fontSize: 22, fontWeight: '700', color: '#f8fafc', marginBottom: 4 },
-  meta: { fontSize: 14, color: '#94a3b8', marginBottom: 16 },
-  editBtn: { backgroundColor: '#334155', paddingHorizontal: 16, paddingVertical: 8, borderRadius: 8 },
-  editBtnText: { color: '#f8fafc', fontSize: 13, fontWeight: '600' },
+  title: { fontSize: 22, fontWeight: '700', color: 'var(--color-text-primary)', marginBottom: 4 },
+  meta: { fontSize: 14, color: 'var(--color-text-secondary)', marginBottom: 16 },
+  editBtn: { backgroundColor: 'var(--color-border)', paddingHorizontal: 16, paddingVertical: 8, borderRadius: 8 },
+  editBtnText: { color: 'var(--color-text-primary)', fontSize: 13, fontWeight: '600' },
   errorBox: { backgroundColor: 'rgba(239,68,68,0.1)', borderRadius: 8, padding: 12, marginBottom: 12 },
   errorText: { color: '#ef4444', fontSize: 14 },
   noticeBox: { backgroundColor: 'rgba(34,197,94,0.1)', borderRadius: 8, padding: 12, marginBottom: 12 },
   noticeText: { color: '#22c55e', fontSize: 14 },
-  section: { backgroundColor: '#1e293b', borderRadius: 12, padding: 16, marginBottom: 12 },
-  sectionTitle: { fontSize: 16, fontWeight: '600', color: '#f8fafc', marginBottom: 12 },
+  section: { backgroundColor: 'var(--color-surface-lighter)', borderRadius: 12, padding: 16, marginBottom: 12 },
+  sectionTitle: { fontSize: 16, fontWeight: '600', color: 'var(--color-text-primary)', marginBottom: 12 },
   phoneChip: {
-    flexDirection: 'row', alignItems: 'center', backgroundColor: '#0f172a',
+    flexDirection: 'row', alignItems: 'center', backgroundColor: 'var(--color-surface)',
     borderRadius: 10, padding: 14, marginBottom: 8, minHeight: 48, gap: 12,
   },
-  phoneLabel: { fontSize: 12, color: '#94a3b8', fontWeight: '500', width: 80 },
+  phoneLabel: { fontSize: 12, color: 'var(--color-text-secondary)', fontWeight: '500', width: 80 },
   phoneNumber: { fontSize: 16, color: '#a78bfa', fontWeight: '600' },
-  stageChip: { paddingHorizontal: 14, paddingVertical: 8, borderRadius: 16, backgroundColor: '#0f172a', marginRight: 6 },
+  stageChip: { paddingHorizontal: 14, paddingVertical: 8, borderRadius: 16, backgroundColor: 'var(--color-surface)', marginRight: 6 },
   stageChipText: { fontSize: 12, fontWeight: '600' },
   callerRow: { flexDirection: 'row', marginBottom: 12 },
-  callerChip: { paddingHorizontal: 14, paddingVertical: 8, borderRadius: 16, backgroundColor: '#0f172a', marginRight: 6 },
+  callerChip: { paddingHorizontal: 14, paddingVertical: 8, borderRadius: 16, backgroundColor: 'var(--color-surface)', marginRight: 6 },
   callerChipActive: { backgroundColor: '#7c3aed' },
-  callerChipText: { fontSize: 13, color: '#94a3b8', fontWeight: '500' },
-  callerChipTextActive: { color: '#ffffff' },
+  callerChipText: { fontSize: 13, color: 'var(--color-text-secondary)', fontWeight: '500' },
+  callerChipTextActive: { color: 'var(--color-text-primary)' },
   assignBtn: { backgroundColor: '#7c3aed', borderRadius: 10, padding: 14, alignItems: 'center', minHeight: 48 },
   assignBtnDisabled: { opacity: 0.6 },
   assignBtnText: { color: '#fff', fontWeight: '600', fontSize: 15 },
-  callCard: { backgroundColor: '#0f172a', borderRadius: 8, padding: 12, marginBottom: 8 },
+  callCard: { backgroundColor: 'var(--color-surface)', borderRadius: 8, padding: 12, marginBottom: 8 },
   callHeader: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 },
   callStatus: { fontSize: 14, color: '#a78bfa', fontWeight: '600', textTransform: 'capitalize' },
-  callDate: { fontSize: 12, color: '#64748b' },
-  callAuthor: { fontSize: 12, color: '#94a3b8', fontStyle: 'italic', marginTop: 2, marginBottom: 4 },
-  callNotes: { fontSize: 13, color: '#cbd5e1', marginTop: 4 },
-  emptyText: { fontSize: 14, color: '#64748b', textAlign: 'center', paddingVertical: 16 },
+  callDate: { fontSize: 12, color: 'var(--color-text-muted)' },
+  callAuthor: { fontSize: 12, color: 'var(--color-text-secondary)', fontStyle: 'italic', marginTop: 2, marginBottom: 4 },
+  callNotes: { fontSize: 13, color: 'var(--color-text-secondary)', marginTop: 4 },
+  emptyText: { fontSize: 14, color: 'var(--color-text-muted)', textAlign: 'center', paddingVertical: 16 },
 });

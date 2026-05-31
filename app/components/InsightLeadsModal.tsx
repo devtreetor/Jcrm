@@ -140,7 +140,7 @@ export default function InsightLeadsModal({
 
   const renderCallCard = (call: CalledLeadRow) => {
     const statusLabel = CALL_STATUS_LABELS[call.status as keyof typeof CALL_STATUS_LABELS] ?? call.status;
-    const statusColor = CALL_STATUS_COLORS[call.status as keyof typeof CALL_STATUS_COLORS] ?? '#94a3b8';
+    const statusColor = CALL_STATUS_COLORS[call.status as keyof typeof CALL_STATUS_COLORS] ?? 'var(--color-text-secondary)';
     return (
       <TouchableOpacity
         key={call.call_id}
@@ -267,7 +267,7 @@ const s = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   modalContainer: {
-    backgroundColor: '#0f172a',
+    backgroundColor: 'var(--color-surface)',
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     maxHeight: '85%',
@@ -299,12 +299,12 @@ const s = StyleSheet.create({
   headerTitle: {
     fontSize: 18,
     fontWeight: '700',
-    color: '#f8fafc',
+    color: 'var(--color-text-primary)',
     fontFamily: 'Montserrat',
   },
   headerSubtitle: {
     fontSize: 12,
-    color: '#94a3b8',
+    color: 'var(--color-text-secondary)',
     fontFamily: 'Poppins',
     marginTop: 2,
   },
@@ -317,7 +317,7 @@ const s = StyleSheet.create({
     alignItems: 'center',
   },
   closeBtnText: {
-    color: '#94a3b8',
+    color: 'var(--color-text-secondary)',
     fontSize: 16,
     fontWeight: '600',
   },
@@ -349,18 +349,18 @@ const s = StyleSheet.create({
     paddingVertical: 40,
   },
   emptyText: {
-    color: '#64748b',
+    color: 'var(--color-text-muted)',
     fontSize: 15,
     fontFamily: 'Poppins',
   },
   // Lead card
   leadCard: {
-    backgroundColor: '#1e293b',
+    backgroundColor: 'var(--color-surface-lighter)',
     borderRadius: 14,
     padding: 16,
     marginBottom: 10,
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.05)',
+    borderColor: 'var(--color-border)',
   },
   leadCardTop: {
     flexDirection: 'row',
@@ -371,14 +371,14 @@ const s = StyleSheet.create({
   leadName: {
     fontSize: 15,
     fontWeight: '600',
-    color: '#f8fafc',
+    color: 'var(--color-text-primary)',
     fontFamily: 'Poppins',
     flex: 1,
     marginRight: 8,
   },
   leadArrow: {
     fontSize: 20,
-    color: '#64748b',
+    color: 'var(--color-text-muted)',
     fontWeight: '300',
   },
   leadCardBottom: {
@@ -388,7 +388,7 @@ const s = StyleSheet.create({
   },
   leadLocation: {
     fontSize: 12,
-    color: '#94a3b8',
+    color: 'var(--color-text-secondary)',
     fontFamily: 'Poppins',
     flex: 1,
     marginRight: 8,
@@ -405,12 +405,12 @@ const s = StyleSheet.create({
   },
   // Call card
   callCard: {
-    backgroundColor: '#1e293b',
+    backgroundColor: 'var(--color-surface-lighter)',
     borderRadius: 14,
     padding: 16,
     marginBottom: 10,
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.05)',
+    borderColor: 'var(--color-border)',
   },
   callCardTop: {
     flexDirection: 'row',
@@ -436,17 +436,17 @@ const s = StyleSheet.create({
   },
   callerName: {
     fontSize: 12,
-    color: '#94a3b8',
+    color: 'var(--color-text-secondary)',
     fontFamily: 'Poppins',
   },
   callDate: {
     fontSize: 11,
-    color: '#64748b',
+    color: 'var(--color-text-muted)',
     fontFamily: 'Poppins',
   },
   callNotes: {
     fontSize: 12,
-    color: '#64748b',
+    color: 'var(--color-text-muted)',
     fontFamily: 'Poppins',
     marginTop: 6,
   },
@@ -467,7 +467,7 @@ const s = StyleSheet.create({
   tabText: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#64748b',
+    color: 'var(--color-text-muted)',
     fontFamily: 'Poppins',
   },
 });

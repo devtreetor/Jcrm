@@ -16,9 +16,16 @@ export default function TLLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [userName, setUserName] = useState('');
   const [showChangePassword, setShowChangePassword] = useState(false);
+  const [theme, setTheme] = useState<'dark' | 'light' | 'brand'>('brand');
 
   useEffect(() => {
     try {
+      const savedTheme = (localStorage.getItem('theme') as 'dark' | 'light' | 'brand') || 'brand';
+      setTheme(savedTheme);
+      const root = window.document.documentElement;
+      root.classList.remove('theme-dark', 'theme-light', 'theme-brand');
+      root.classList.add(`theme-${savedTheme}`);
+
       const stored = localStorage.getItem('user');
       if (stored) {
         const user = JSON.parse(stored);
@@ -34,6 +41,14 @@ export default function TLLayout({ children }: { children: React.ReactNode }) {
       router.push('/login');
     }
   }, [router]);
+
+  const toggleTheme = (newTheme: 'dark' | 'light' | 'brand') => {
+    setTheme(newTheme);
+    localStorage.setItem('theme', newTheme);
+    const root = window.document.documentElement;
+    root.classList.remove('theme-dark', 'theme-light', 'theme-brand');
+    root.classList.add(`theme-${newTheme}`);
+  };
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -52,6 +67,29 @@ export default function TLLayout({ children }: { children: React.ReactNode }) {
           </View>
         </View>
         <View style={styles.headerRight}>
+          <View style={styles.themeRow}>
+            <TouchableOpacity 
+              style={[styles.themeChip, theme === 'light' && styles.themeChipActive]} 
+              onPress={() => toggleTheme('light')}
+              activeOpacity={0.7}
+            >
+              <Text style={styles.themeIcon}>☀️</Text>
+            </TouchableOpacity>
+            <TouchableOpacity 
+              style={[styles.themeChip, theme === 'dark' && styles.themeChipActive]} 
+              onPress={() => toggleTheme('dark')}
+              activeOpacity={0.7}
+            >
+              <Text style={styles.themeIcon}>🌙</Text>
+            </TouchableOpacity>
+            <TouchableOpacity 
+              style={[styles.themeChip, theme === 'brand' && styles.themeChipActive]} 
+              onPress={() => toggleTheme('brand')}
+              activeOpacity={0.7}
+            >
+              <Text style={styles.themeIcon}>🎓</Text>
+            </TouchableOpacity>
+          </View>
           <Text style={styles.userName}>{userName}</Text>
           <TouchableOpacity style={styles.changePwdBtn} onPress={() => setShowChangePassword(true)}>
             <Text style={styles.changePwdText}>🔒 Password</Text>
@@ -95,7 +133,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     minHeight: '100vh' as unknown as number,
-    backgroundColor: '#0f172a',
+    backgroundColor: 'var(--color-surface)',
   },
   header: {
     flexDirection: 'row',
@@ -103,9 +141,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 16,
     paddingVertical: 12,
-    backgroundColor: '#1e293b',
+    backgroundColor: 'var(--color-surface-light)',
     borderBottomWidth: 1,
-    borderBottomColor: '#334155',
+    borderBottomColor: 'var(--color-border)',
   },
   headerLeft: {
     flexDirection: 'row',
@@ -115,10 +153,10 @@ const styles = StyleSheet.create({
   logoText: {
     fontSize: 20,
     fontWeight: '700',
-    color: '#E24E59',
+    color: 'var(--color-primary)',
   },
   roleBadge: {
-    backgroundColor: 'rgba(18, 112, 227, 0.2)',
+    backgroundColor: 'rgba(18, 112, 227, 0.15)',
     paddingHorizontal: 8,
     paddingVertical: 2,
     borderRadius: 6,
@@ -126,7 +164,7 @@ const styles = StyleSheet.create({
   roleBadgeText: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#1270E3',
+    color: 'var(--color-secondary)',
   },
   headerRight: {
     flexDirection: 'row',
@@ -135,7 +173,7 @@ const styles = StyleSheet.create({
   },
   userName: {
     fontSize: 14,
-    color: '#cbd5e1',
+    color: 'var(--color-text-primary)',
   },
   logoutBtn: {
     paddingHorizontal: 12,
@@ -156,12 +194,12 @@ const styles = StyleSheet.create({
   },
   changePwdText: {
     fontSize: 13,
-    color: '#1270E3',
+    color: 'var(--color-secondary)',
     fontWeight: '500',
   },
   nav: {
     flexDirection: 'row',
-    backgroundColor: '#1e293b',
+    backgroundColor: 'var(--color-surface-light)',
     paddingHorizontal: 8,
     paddingBottom: 8,
     gap: 4,
@@ -183,14 +221,34 @@ const styles = StyleSheet.create({
   },
   navLabel: {
     fontSize: 13,
-    color: '#94a3b8',
+    color: 'var(--color-text-secondary)',
     fontWeight: '500',
   },
   navLabelActive: {
-    color: '#1270E3',
+    color: 'var(--color-secondary)',
   },
   content: {
     flex: 1,
     padding: 16,
+  },
+  themeRow: {
+    flexDirection: 'row',
+    backgroundColor: 'rgba(0, 0, 0, 0.2)',
+    borderRadius: 10,
+    padding: 2,
+    marginRight: 4,
+  },
+  themeChip: {
+    width: 28,
+    height: 28,
+    borderRadius: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  themeChipActive: {
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+  },
+  themeIcon: {
+    fontSize: 14,
   },
 });

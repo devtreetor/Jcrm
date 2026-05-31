@@ -224,7 +224,7 @@ const styles = StyleSheet.create({
     width: '100%',
     maxWidth: 500,
     maxHeight: '85%',
-    backgroundColor: '#1e293b',
+    backgroundColor: 'var(--color-surface-lighter)',
     borderRadius: 16,
     padding: 24,
     shadowColor: '#000',
@@ -242,7 +242,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: '700',
-    color: '#f8fafc',
+    color: 'var(--color-text-primary)',
     marginBottom: 8,
   },
   errorBox: {
@@ -259,19 +259,19 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 13,
-    color: '#94a3b8',
+    color: 'var(--color-text-secondary)',
     marginBottom: 6,
     fontWeight: '500',
   },
   input: {
     height: 48,
-    backgroundColor: '#0f172a',
+    backgroundColor: 'var(--color-surface)',
     borderWidth: 1,
-    borderColor: '#334155',
+    borderColor: 'var(--color-border)',
     borderRadius: 8,
     paddingHorizontal: 16,
     fontSize: 15,
-    color: '#f8fafc',
+    color: 'var(--color-text-primary)',
     marginBottom: 16,
   },
   row: {
@@ -283,7 +283,7 @@ const styles = StyleSheet.create({
   },
   divider: {
     height: 1,
-    backgroundColor: '#334155',
+    backgroundColor: 'var(--color-border)',
     marginVertical: 16,
   },
   actions: {
@@ -295,12 +295,12 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 48,
     borderRadius: 8,
-    backgroundColor: '#334155',
+    backgroundColor: 'var(--color-border)',
     alignItems: 'center',
     justifyContent: 'center',
   },
   cancelBtnText: {
-    color: '#cbd5e1',
+    color: 'var(--color-text-secondary)',
     fontWeight: '600',
     fontSize: 15,
   },

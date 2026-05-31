@@ -166,18 +166,18 @@ export default function AdminImportPage() {
 }
 
 const styles = StyleSheet.create({
-  scroll: { flex: 1, backgroundColor: '#0b1120' },
+  scroll: { flex: 1, backgroundColor: 'var(--color-surface)' },
   scrollContent: { padding: 20, paddingBottom: 40 },
   title: { 
     fontSize: 28, 
     fontWeight: '800', 
-    color: '#f8fafc', 
+    color: 'var(--color-text-primary)', 
     marginBottom: 6,
     fontFamily: 'Montserrat'
   },
   subtitle: { 
     fontSize: 15, 
-    color: '#94a3b8', 
+    color: 'var(--color-text-secondary)', 
     marginBottom: 24,
     fontFamily: 'Poppins'
   },
@@ -189,18 +189,18 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'rgba(226,78,89,0.2)',
   },
-  errorText: { color: '#E24E59', fontSize: 14, fontFamily: 'Poppins' },
+  errorText: { color: 'var(--color-primary)', fontSize: 14, fontFamily: 'Poppins' },
   formCard: { 
-    backgroundColor: '#171f2f', 
+    backgroundColor: 'var(--color-surface-light)', 
     borderRadius: 24, 
     padding: 24, 
     marginBottom: 20,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.05)',
+    borderColor: 'var(--color-border)',
   },
   label: { 
     fontSize: 14, 
-    color: '#cbd5e1', 
+    color: 'var(--color-text-secondary)', 
     marginBottom: 10,
     fontWeight: '600',
     fontFamily: 'Poppins'
@@ -208,11 +208,11 @@ const styles = StyleSheet.create({
   input: {
     height: 54, 
     borderWidth: 1, 
-    borderColor: 'rgba(255, 255, 255, 0.1)', 
+    borderColor: 'var(--color-border)', 
     borderRadius: 14,
     paddingHorizontal: 16, 
     fontSize: 16, 
-    color: '#f8fafc', 
+    color: 'var(--color-text-primary)', 
     backgroundColor: 'rgba(15, 23, 42, 0.5)', 
     marginBottom: 20,
     fontFamily: 'Poppins',
@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
     alignItems: 'center', 
     height: 54,
     borderWidth: 1, 
-    borderColor: 'rgba(255, 255, 255, 0.1)', 
+    borderColor: 'var(--color-border)', 
     borderRadius: 14,
     paddingHorizontal: 16, 
     backgroundColor: 'rgba(15, 23, 42, 0.5)', 
@@ -231,42 +231,42 @@ const styles = StyleSheet.create({
     borderStyle: 'dashed',
   },
   fileIcon: { fontSize: 20 },
-  fileText: { fontSize: 15, color: '#94a3b8', fontFamily: 'Poppins' },
+  fileText: { fontSize: 15, color: 'var(--color-text-secondary)', fontFamily: 'Poppins' },
   formatInfo: { 
     backgroundColor: 'rgba(15, 23, 42, 0.5)', 
     borderRadius: 14, 
     padding: 16, 
     marginBottom: 24,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.05)',
+    borderColor: 'var(--color-border)',
   },
   formatTitle: { 
     fontSize: 14, 
     fontWeight: '700', 
-    color: '#1270E3', 
+    color: 'var(--color-secondary)', 
     marginBottom: 6,
     fontFamily: 'Montserrat'
   },
   formatText: { 
     fontSize: 13, 
-    color: '#cbd5e1', 
+    color: 'var(--color-text-secondary)', 
     marginBottom: 6, 
     fontFamily: 'Poppins',
     lineHeight: 18,
   },
   formatNote: { 
     fontSize: 13, 
-    color: '#F8DE6F', 
+    color: 'var(--color-accent)', 
     fontWeight: '600',
     fontFamily: 'Poppins'
   },
   uploadBtn: { 
-    backgroundColor: '#E24E59', 
+    backgroundColor: 'var(--color-primary)', 
     borderRadius: 16, 
     padding: 18, 
     alignItems: 'center', 
     minHeight: 56,
-    shadowColor: '#E24E59',
+    shadowColor: 'var(--color-primary)',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
@@ -274,16 +274,16 @@ const styles = StyleSheet.create({
   uploadBtnDisabled: { opacity: 0.6 },
   uploadBtnText: { color: '#fff', fontWeight: '700', fontSize: 17, fontFamily: 'Poppins' },
   resultCard: { 
-    backgroundColor: '#171f2f', 
+    backgroundColor: 'var(--color-surface-light)', 
     borderRadius: 24, 
     padding: 24,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.05)',
+    borderColor: 'var(--color-border)',
   },
   resultTitle: { 
     fontSize: 20, 
     fontWeight: '700', 
-    color: '#f8fafc', 
+    color: 'var(--color-text-primary)', 
     marginBottom: 20,
     fontFamily: 'Montserrat'
   },
@@ -295,27 +295,27 @@ const styles = StyleSheet.create({
     borderRadius: 16, 
     padding: 16,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.05)',
+    borderColor: 'var(--color-border)',
   },
   resultValue: { 
     fontSize: 28, 
     fontWeight: '800', 
-    color: '#f8fafc',
+    color: 'var(--color-text-primary)',
     fontFamily: 'Poppins'
   },
   resultLabel: { 
     fontSize: 12, 
-    color: '#94a3b8', 
+    color: 'var(--color-text-secondary)', 
     marginTop: 4,
     fontWeight: '600',
     fontFamily: 'Poppins',
     textTransform: 'uppercase',
   },
-  errorsSection: { borderTopWidth: 1, borderTopColor: 'rgba(255, 255, 255, 0.05)', paddingTop: 20 },
+  errorsSection: { borderTopWidth: 1, borderTopColor: 'var(--color-border)', paddingTop: 20 },
   errorsTitle: { 
     fontSize: 16, 
     fontWeight: '700', 
-    color: '#E24E59', 
+    color: 'var(--color-primary)', 
     marginBottom: 12,
     fontFamily: 'Montserrat'
   },
@@ -328,20 +328,20 @@ const styles = StyleSheet.create({
   },
   errorRowNum: { 
     fontSize: 13, 
-    color: '#F8DE6F', 
+    color: 'var(--color-accent)', 
     fontWeight: '700', 
     width: 60,
     fontFamily: 'Poppins'
   },
   errorReason: { 
     fontSize: 13, 
-    color: '#94a3b8', 
+    color: 'var(--color-text-secondary)', 
     flex: 1,
     fontFamily: 'Poppins'
   },
   moreErrors: { 
     fontSize: 13, 
-    color: '#64748b', 
+    color: 'var(--color-text-muted)', 
     marginTop: 12, 
     fontStyle: 'italic',
     fontFamily: 'Poppins'

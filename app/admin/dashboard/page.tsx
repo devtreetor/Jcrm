@@ -17,13 +17,13 @@ const RANGE_OPTIONS: { label: string; value: InsightsRange }[] = [
 
 const StageChart = ({ data }: { data: InsightsData }) => {
   const stages = [
-    { label: 'Demos', value: data.demos_booked, color: '#E24E59' },
+    { label: 'Demos', value: data.demos_booked, color: 'var(--color-primary)' },
     { label: 'Mtg Fixed', value: data.meetings_fixed, color: '#06b6d4' },
     { label: 'Mtg Done', value: data.meetings_done, color: '#0ea5e9' },
     { label: 'Negotiation', value: data.negotiations, color: '#8b5cf6' },
-    { label: 'Proposal', value: data.proposals_sent, color: '#F8DE6F' },
+    { label: 'Proposal', value: data.proposals_sent, color: 'var(--color-accent)' },
     { label: 'Won', value: data.won, color: '#22c55e' },
-    { label: 'Lost', value: data.lost, color: '#94a3b8' },
+    { label: 'Lost', value: data.lost, color: 'var(--color-text-secondary)' },
   ];
   
   const max = Math.max(...stages.map(s => s.value), 1);
@@ -87,14 +87,14 @@ export default function AdminDashboard() {
 
   const statCards = insights
     ? [
-        { label: 'Calls', value: insights.total_calls, color: '#1270E3', type: 'calls' as const },
-        { label: 'Demos', value: insights.demos_booked, color: '#E24E59', type: 'stage' as const, stage: 'demo_booked' as LeadStage },
+        { label: 'Calls', value: insights.total_calls, color: 'var(--color-secondary)', type: 'calls' as const },
+        { label: 'Demos', value: insights.demos_booked, color: 'var(--color-primary)', type: 'stage' as const, stage: 'demo_booked' as LeadStage },
         { label: 'Mtg Fixed', value: insights.meetings_fixed, color: '#06b6d4', type: 'stage' as const, stage: 'meeting_fixed' as LeadStage },
         { label: 'Mtg Done', value: insights.meetings_done, color: '#0ea5e9', type: 'stage' as const, stage: 'meeting_done' as LeadStage },
         { label: 'Negotiation', value: insights.negotiations, color: '#8b5cf6', type: 'stage' as const, stage: 'negotiation' as LeadStage },
         { label: 'Proposal', value: insights.proposals_sent, color: '#a78bfa', type: 'stage' as const, stage: 'proposal_sent' as LeadStage },
         { label: 'Won', value: insights.won, color: '#22c55e', type: 'stage' as const, stage: 'won' as LeadStage },
-        { label: 'Lost', value: insights.lost, color: '#94a3b8', type: 'stage' as const, stage: 'lost' as LeadStage },
+        { label: 'Lost', value: insights.lost, color: 'var(--color-text-secondary)', type: 'stage' as const, stage: 'lost' as LeadStage },
       ]
     : [];
 
@@ -202,17 +202,17 @@ export default function AdminDashboard() {
 
 const chartStyles = StyleSheet.create({
   container: {
-    backgroundColor: '#171f2f',
+    backgroundColor: 'var(--color-surface-light)',
     borderRadius: 20,
     padding: 20,
     marginBottom: 24,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.05)',
+    borderColor: 'var(--color-border)',
   },
   title: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#f8fafc',
+    color: 'var(--color-text-primary)',
     marginBottom: 20,
     fontFamily: 'Montserrat',
   },
@@ -230,7 +230,7 @@ const chartStyles = StyleSheet.create({
   barBackground: {
     width: 12,
     height: '100%',
-    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    backgroundColor: 'var(--color-border)',
     borderRadius: 6,
     justifyContent: 'flex-end',
     overflow: 'hidden',
@@ -241,7 +241,7 @@ const chartStyles = StyleSheet.create({
   },
   barLabel: {
     fontSize: 10,
-    color: '#94a3b8',
+    color: 'var(--color-text-secondary)',
     marginTop: 8,
     fontFamily: 'Poppins',
     textAlign: 'center',
@@ -249,12 +249,12 @@ const chartStyles = StyleSheet.create({
 });
 
 const styles = StyleSheet.create({
-  scroll: { flex: 1, backgroundColor: '#0b1120' },
+  scroll: { flex: 1, backgroundColor: 'var(--color-surface)' },
   scrollContent: { padding: 20, paddingBottom: 40 },
   title: { 
     fontSize: 28, 
     fontWeight: '800', 
-    color: '#f8fafc', 
+    color: 'var(--color-text-primary)', 
     marginBottom: 24,
     fontFamily: 'Montserrat',
   },
@@ -263,17 +263,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
     paddingVertical: 10,
     borderRadius: 14,
-    backgroundColor: '#171f2f',
+    backgroundColor: 'var(--color-surface-light)',
     marginRight: 10,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
+    borderColor: 'var(--color-border)',
   },
   rangePillActive: { 
-    backgroundColor: '#E24E59',
-    borderColor: '#E24E59',
+    backgroundColor: 'var(--color-primary)',
+    borderColor: 'var(--color-primary)',
   },
-  rangePillText: { fontSize: 13, color: '#94a3b8', fontWeight: '600', fontFamily: 'Poppins' },
-  rangePillTextActive: { color: '#ffffff' },
+  rangePillText: { fontSize: 13, color: 'var(--color-text-secondary)', fontWeight: '600', fontFamily: 'Poppins' },
+  rangePillTextActive: { color: 'var(--color-text-primary)' },
   errorBox: {
     backgroundColor: 'rgba(226,78,89,0.1)',
     borderRadius: 12,
@@ -282,7 +282,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'rgba(226,78,89,0.2)',
   },
-  errorText: { color: '#E24E59', fontSize: 14, fontFamily: 'Poppins' },
+  errorText: { color: 'var(--color-primary)', fontSize: 14, fontFamily: 'Poppins' },
   loader: { marginTop: 48 },
   grid: {
     flexDirection: 'row',
@@ -292,11 +292,11 @@ const styles = StyleSheet.create({
   },
   statCard: {
     width: '48%' as unknown as number,
-    backgroundColor: '#171f2f',
+    backgroundColor: 'var(--color-surface-light)',
     borderRadius: 20,
     padding: 20,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.05)',
+    borderColor: 'var(--color-border)',
   },
   statIconBadge: {
     width: 24,
@@ -309,35 +309,35 @@ const styles = StyleSheet.create({
   statValue: { 
     fontSize: 28, 
     fontWeight: '800', 
-    color: '#f8fafc', 
+    color: 'var(--color-text-primary)', 
     marginBottom: 4,
     fontFamily: 'Poppins' 
   },
   statLabel: { 
     fontSize: 12, 
     fontWeight: '600', 
-    color: '#94a3b8',
+    color: 'var(--color-text-secondary)',
     fontFamily: 'Poppins' 
   },
   quickActions: { marginTop: 8 },
   sectionTitle: { 
     fontSize: 20, 
     fontWeight: '700', 
-    color: '#f8fafc', 
+    color: 'var(--color-text-primary)', 
     marginBottom: 16,
     fontFamily: 'Montserrat'
   },
   actionBtn: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#171f2f',
+    backgroundColor: 'var(--color-surface-light)',
     borderRadius: 16,
     padding: 18,
     marginBottom: 10,
     gap: 12,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.05)',
+    borderColor: 'var(--color-border)',
   },
   actionIcon: { fontSize: 22 },
-  actionText: { fontSize: 16, color: '#f8fafc', fontWeight: '600', fontFamily: 'Poppins' },
+  actionText: { fontSize: 16, color: 'var(--color-text-primary)', fontWeight: '600', fontFamily: 'Poppins' },
 });
