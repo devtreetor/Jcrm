@@ -49,7 +49,7 @@ export async function createCallLog(
   supabase: SupabaseClient,
   leadId: string,
   callerId: string,
-  payload: CreateCallLogPayload
+  payload: CreateCallLogPayload & { tagged_user_ids?: string[] }
 ): Promise<CallLog> {
   try {
     const { data, error } = await supabase
@@ -85,6 +85,41 @@ export async function createCallLog(
         console.error('Failed to insert call photos:', photosError.message);
       } else {
         callLog.photos = (photos as CallPhoto[]) || [];
+      }
+    }
+
+    // Create notifications for tagged users
+    if (payload.tagged_user_ids && payload.tagged_user_ids.length > 0) {
+      const { data: callerData } = await supabase
+        .from('users')
+        .select('full_name')
+        .eq('id', callerId)
+        .single();
+      const callerName = callerData?.full_name || 'A team member';
+
+      const { data: leadData } = await supabase
+        .from('leads')
+        .select('school_name')
+        .eq('id', leadId)
+        .single();
+      const schoolName = leadData?.school_name || 'a lead';
+
+      const notificationMessage = `${callerName} tagged you in a call log for ${schoolName}`;
+
+      const notificationRows = payload.tagged_user_ids.map((recipientId) => ({
+        recipient_id: recipientId,
+        sender_id: callerId,
+        lead_id: leadId,
+        message: notificationMessage,
+        is_read: false,
+      }));
+
+      const { error: notificationError } = await supabase
+        .from('notifications')
+        .insert(notificationRows);
+
+      if (notificationError) {
+        console.error('Failed to create notifications:', notificationError.message);
       }
     }
 

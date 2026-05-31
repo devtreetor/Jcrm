@@ -30,8 +30,31 @@ export default function AdminLeadDetailPage() {
   const [callNotes, setCallNotes] = useState('');
   const [loggingCall, setLoggingCall] = useState(false);
   const [showCallForm, setShowCallForm] = useState(false);
+  const [mentionableUsers, setMentionableUsers] = useState<User[]>([]);
+  const [selectedTaggedUsers, setSelectedTaggedUsers] = useState<string[]>([]);
 
   const getToken = () => localStorage.getItem('token') || '';
+
+  useEffect(() => {
+    const fetchMentionables = async () => {
+      try {
+        const res = await fetch('/api/users/mentionable', {
+          headers: {
+            Authorization: `Bearer ${getToken()}`,
+          },
+        });
+        if (res.ok) {
+          const json = await res.json();
+          if (json && json.data) {
+            setMentionableUsers(json.data);
+          }
+        }
+      } catch (err) {
+        console.error('Failed to fetch mentionable users:', err);
+      }
+    };
+    fetchMentionables();
+  }, []);
 
   const fetchLead = useCallback(async () => {
     try {
@@ -163,13 +186,18 @@ export default function AdminLeadDetailPage() {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${getToken()}`,
         },
-        body: JSON.stringify({ status: callStatus, notes: callNotes.trim() }),
+        body: JSON.stringify({
+          status: callStatus,
+          notes: callNotes.trim(),
+          tagged_user_ids: selectedTaggedUsers,
+        }),
       });
       const json = await res.json();
       if (!res.ok) throw new Error(json.error);
       setNotice('Call logged successfully');
       setShowCallForm(false);
       setCallNotes('');
+      setSelectedTaggedUsers([]);
       fetchCalls();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to log call');
@@ -352,6 +380,42 @@ export default function AdminLeadDetailPage() {
             value={callNotes}
             onChangeText={setCallNotes}
           />
+
+          {mentionableUsers.length > 0 && (
+            <View style={{ marginBottom: 16 }}>
+              <Text style={{ color: 'var(--color-text-secondary)', fontSize: 13, marginBottom: 8, fontWeight: '600', fontFamily: 'Poppins' }}>Tag Team Member (Sends Notification)</Text>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ flexDirection: 'row' }}>
+                {mentionableUsers.map(u => {
+                  const isSelected = selectedTaggedUsers.includes(u.id);
+                  return (
+                    <TouchableOpacity
+                      key={u.id}
+                      style={[
+                        styles.stageChip,
+                        { marginRight: 8 },
+                        isSelected && { backgroundColor: 'var(--color-secondary)', borderColor: 'var(--color-secondary)' }
+                      ]}
+                      onPress={() => {
+                        if (isSelected) {
+                          setSelectedTaggedUsers(selectedTaggedUsers.filter(id => id !== u.id));
+                        } else {
+                          setSelectedTaggedUsers([...selectedTaggedUsers, u.id]);
+                          if (!callNotes.includes(`@${u.full_name}`)) {
+                            setCallNotes(prev => prev ? `${prev} @${u.full_name}` : `@${u.full_name}`);
+                          }
+                        }
+                      }}
+                    >
+                      <Text style={[styles.stageChipText, { color: isSelected ? '#fff' : 'var(--color-text-secondary)' }]}>
+                        @{u.full_name} ({u.role === 'admin' ? 'Admin' : u.role === 'team_lead' ? 'TL' : 'SE'})
+                      </Text>
+                    </TouchableOpacity>
+                  );
+                })}
+              </ScrollView>
+            </View>
+          )}
+
           <TouchableOpacity
             style={[styles.assignBtn, { marginTop: 0 }, loggingCall && styles.assignBtnDisabled]}
             onPress={handleLogCall}

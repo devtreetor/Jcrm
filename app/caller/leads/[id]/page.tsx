@@ -13,6 +13,7 @@ import {
 import EditLeadModal from '@/app/components/EditLeadModal';
 import type { Lead, LeadStage } from '@/types/lead.types';
 import type { CallLog, CallStatus } from '@/types/call.types';
+import type { User } from '@/types/user.types';
 
 interface PhotoPreview {
   uri: string;
@@ -39,6 +40,29 @@ export default function CallerLeadDetailPage() {
   const [uploadingPhotos, setUploadingPhotos] = useState(false);
   const [lightboxUrl, setLightboxUrl] = useState<string | null>(null);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [mentionableUsers, setMentionableUsers] = useState<User[]>([]);
+  const [selectedTaggedUsers, setSelectedTaggedUsers] = useState<string[]>([]);
+
+  useEffect(() => {
+    const fetchMentionables = async () => {
+      try {
+        const res = await fetch('/api/users/mentionable', {
+          headers: {
+            Authorization: `Bearer ${getToken()}`,
+          },
+        });
+        if (res.ok) {
+          const json = await res.json();
+          if (json && json.data) {
+            setMentionableUsers(json.data);
+          }
+        }
+      } catch (err) {
+        console.error('Failed to fetch mentionable users:', err);
+      }
+    };
+    fetchMentionables();
+  }, []);
 
   const cameraInputRef = useRef<HTMLInputElement>(null);
   const galleryInputRef = useRef<HTMLInputElement>(null);
@@ -142,6 +166,7 @@ export default function CallerLeadDetailPage() {
       if (callNotes.trim()) body.notes = callNotes.trim();
       if (callbackDate) body.callback_date = new Date(callbackDate).toISOString();
       if (photoUrls.length > 0) body.photo_urls = photoUrls;
+      body.tagged_user_ids = selectedTaggedUsers;
 
       const res = await fetch(`${API_ROUTES.LEADS}/${leadId}/calls`, {
         method: 'POST',
@@ -158,6 +183,7 @@ export default function CallerLeadDetailPage() {
       setCallStatus('answered');
       setCallNotes('');
       setCallbackDate('');
+      setSelectedTaggedUsers([]);
       // Clean up photo previews
       photos.forEach((p) => URL.revokeObjectURL(p.uri));
       setPhotos([]);
@@ -409,6 +435,41 @@ export default function CallerLeadDetailPage() {
               multiline
               numberOfLines={3}
             />
+
+            {mentionableUsers.length > 0 && (
+              <View style={{ marginTop: 12 }}>
+                <Text style={styles.sheetLabel}>Tag Team Member (Sends Notification)</Text>
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ flexDirection: 'row' }}>
+                  {mentionableUsers.map(u => {
+                    const isSelected = selectedTaggedUsers.includes(u.id);
+                    return (
+                      <TouchableOpacity
+                        key={u.id}
+                        style={[
+                          styles.statusChip,
+                          { marginRight: 8 },
+                          isSelected && { backgroundColor: 'var(--color-secondary)', borderColor: 'var(--color-secondary)' }
+                        ]}
+                        onPress={() => {
+                          if (isSelected) {
+                            setSelectedTaggedUsers(selectedTaggedUsers.filter(id => id !== u.id));
+                          } else {
+                            setSelectedTaggedUsers([...selectedTaggedUsers, u.id]);
+                            if (!callNotes.includes(`@${u.full_name}`)) {
+                              setCallNotes(prev => prev ? `${prev} @${u.full_name}` : `@${u.full_name}`);
+                            }
+                          }
+                        }}
+                      >
+                        <Text style={[styles.statusChipText, isSelected && { color: '#fff' }]}>
+                          @{u.full_name} ({u.role === 'admin' ? 'Admin' : 'TL'})
+                        </Text>
+                      </TouchableOpacity>
+                    );
+                  })}
+                </ScrollView>
+              </View>
+            )}
 
             <Text style={styles.sheetLabel}>Callback Date (optional)</Text>
             <TextInput

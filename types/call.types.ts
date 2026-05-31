@@ -30,4 +30,5 @@ export interface CreateCallLogPayload {
   notes?: string | null;
   callback_date?: string | null;
   photo_urls?: string[];
+  tagged_user_ids?: string[];
 }

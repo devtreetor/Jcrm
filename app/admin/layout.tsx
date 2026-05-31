@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { useRouter, usePathname } from 'next/navigation';
 import { ROUTES } from '@/lib/constants';
 import ChangePasswordModal from '@/app/components/ChangePasswordModal';
@@ -19,6 +19,76 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [userName, setUserName] = useState('');
   const [showChangePassword, setShowChangePassword] = useState(false);
   const [theme, setTheme] = useState<'dark' | 'light' | 'brand'>('brand');
+  const [notifications, setNotifications] = useState<any[]>([]);
+  const [showNotifications, setShowNotifications] = useState(false);
+
+  const fetchNotifications = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+      const res = await fetch('/api/notifications', {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      if (res.ok) {
+        const json = await res.json();
+        if (json && json.data) {
+          setNotifications(json.data);
+        }
+      }
+    } catch (err) {
+      console.error('Failed to fetch notifications:', err);
+    }
+  };
+
+  useEffect(() => {
+    fetchNotifications();
+    const interval = setInterval(fetchNotifications, 30000);
+    return () => clearInterval(interval);
+  }, [pathname]);
+
+  const handleNotificationClick = async (notif: any) => {
+    try {
+      const token = localStorage.getItem('token');
+      const res = await fetch('/api/notifications', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ id: notif.id }),
+      });
+      if (res.ok) {
+        setNotifications(prev => prev.map(n => n.id === notif.id ? { ...n, is_read: true } : n));
+        setShowNotifications(false);
+        router.push(`/admin/leads/${notif.lead_id}`);
+      }
+    } catch (err) {
+      console.error('Failed to click notification:', err);
+    }
+  };
+
+  const handleMarkAllRead = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const res = await fetch('/api/notifications', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ all: true }),
+      });
+      if (res.ok) {
+        setNotifications(prev => prev.map(n => ({ ...n, is_read: true })));
+      }
+    } catch (err) {
+      console.error('Failed to mark all read:', err);
+    }
+  };
+
+  const unreadCount = notifications.filter(n => !n.is_read).length;
 
   useEffect(() => {
     try {
@@ -92,6 +162,20 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <Text style={styles.themeIcon}>🎓</Text>
             </TouchableOpacity>
           </View>
+
+          <TouchableOpacity 
+            style={styles.bellBtn} 
+            onPress={() => setShowNotifications(!showNotifications)}
+            activeOpacity={0.7}
+          >
+            <Text style={styles.bellIcon}>🔔</Text>
+            {unreadCount > 0 && (
+              <View style={styles.bellBadge}>
+                <Text style={styles.bellBadgeText}>{unreadCount}</Text>
+              </View>
+            )}
+          </TouchableOpacity>
+
           <Text style={styles.userName}>{userName}</Text>
           <TouchableOpacity style={styles.changePwdBtn} onPress={() => setShowChangePassword(true)}>
             <Text style={styles.changePwdText}>🔒 Password</Text>
@@ -122,6 +206,37 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       </View>
 
       <View style={styles.content}>{children}</View>
+
+      {showNotifications && (
+        <View style={styles.notificationsDropdown}>
+          <View style={styles.dropdownHeader}>
+            <Text style={styles.dropdownTitle}>Notifications</Text>
+            {unreadCount > 0 && (
+              <TouchableOpacity onPress={handleMarkAllRead}>
+                <Text style={styles.markAllReadText}>Mark all read</Text>
+              </TouchableOpacity>
+            )}
+          </View>
+          <ScrollView style={styles.dropdownList} nestedScrollEnabled>
+            {notifications.length === 0 ? (
+              <Text style={styles.emptyNotificationText}>No notifications yet</Text>
+            ) : (
+              notifications.map((n) => (
+                <TouchableOpacity
+                  key={n.id}
+                  style={[styles.notificationItem, !n.is_read && styles.notificationItemUnread]}
+                  onPress={() => handleNotificationClick(n)}
+                >
+                  <Text style={styles.notificationText}>{n.message}</Text>
+                  <Text style={styles.notificationTime}>
+                    {new Date(n.created_at).toLocaleString()}
+                  </Text>
+                </TouchableOpacity>
+              ))
+            )}
+          </ScrollView>
+        </View>
+      )}
 
       <ChangePasswordModal
         visible={showChangePassword}
@@ -252,5 +367,100 @@ const styles = StyleSheet.create({
   },
   themeIcon: {
     fontSize: 14,
+  },
+  bellBtn: {
+    position: 'relative',
+    padding: 6,
+    marginRight: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  bellIcon: {
+    fontSize: 18,
+  },
+  bellBadge: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    backgroundColor: 'var(--color-primary)',
+    borderRadius: 8,
+    minWidth: 16,
+    height: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 3,
+  },
+  bellBadgeText: {
+    color: '#ffffff',
+    fontSize: 9,
+    fontWeight: '700',
+  },
+  notificationsDropdown: {
+    position: 'absolute',
+    top: 60,
+    right: 16,
+    width: 320,
+    maxHeight: 400,
+    backgroundColor: 'var(--color-surface-light)',
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: 'var(--color-border)',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.3,
+    shadowRadius: 16,
+    zIndex: 999,
+    padding: 16,
+  },
+  dropdownHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: 'var(--color-border)',
+    paddingBottom: 8,
+  },
+  dropdownTitle: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: 'var(--color-text-primary)',
+    fontFamily: 'Montserrat',
+  },
+  markAllReadText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: 'var(--color-secondary)',
+    fontFamily: 'Poppins',
+  },
+  dropdownList: {
+    maxHeight: 300,
+  },
+  notificationItem: {
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: 'var(--color-border)',
+  },
+  notificationItemUnread: {
+    backgroundColor: 'rgba(237, 82, 81, 0.05)',
+  },
+  notificationText: {
+    fontSize: 12,
+    color: 'var(--color-text-primary)',
+    fontFamily: 'Poppins',
+    lineHeight: 16,
+  },
+  notificationTime: {
+    fontSize: 10,
+    color: 'var(--color-text-muted)',
+    fontFamily: 'Poppins',
+    marginTop: 4,
+  },
+  emptyNotificationText: {
+    textAlign: 'center',
+    color: 'var(--color-text-muted)',
+    fontSize: 13,
+    fontFamily: 'Poppins',
+    paddingVertical: 20,
   },
 });

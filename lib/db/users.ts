@@ -115,3 +115,49 @@ export async function getTeamLeads(supabase: SupabaseClient): Promise<User[]> {
     throw new Error(message);
   }
 }
+
+export async function getMentionableUsers(
+  supabase: SupabaseClient,
+  userId: string,
+  role: string,
+  teamLeadId: string | null
+): Promise<User[]> {
+  try {
+    if (role === 'admin') {
+      const { data, error } = await supabase
+        .from('users')
+        .select('*')
+        .eq('is_active', true)
+        .neq('id', userId)
+        .order('full_name');
+      if (error) throw error;
+      return data as User[];
+    } else if (role === 'team_lead') {
+      const { data, error } = await supabase
+        .from('users')
+        .select('*')
+        .eq('is_active', true)
+        .neq('id', userId)
+        .or(`role.eq.admin,role.eq.team_lead,and(role.eq.caller,team_lead_id.eq.${userId})`)
+        .order('full_name');
+      if (error) throw error;
+      return data as User[];
+    } else {
+      const orQuery = teamLeadId 
+        ? `role.eq.admin,id.eq.${teamLeadId}` 
+        : 'role.eq.admin';
+      const { data, error } = await supabase
+        .from('users')
+        .select('*')
+        .eq('is_active', true)
+        .neq('id', userId)
+        .or(orQuery)
+        .order('full_name');
+      if (error) throw error;
+      return data as User[];
+    }
+  } catch (err) {
+    const message = err instanceof Error ? err.message : 'Failed to fetch mentionable users';
+    throw new Error(message);
+  }
+}
