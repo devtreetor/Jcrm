@@ -353,7 +353,7 @@ export default function AdminLeadDetailPage() {
           </TouchableOpacity>
         </View>
 
-        <View style={[{ backgroundColor: 'rgba(15, 23, 42, 0.5)', padding: 16, borderRadius: 14, marginBottom: 16, borderWidth: 1, borderColor: 'var(--color-border)' }, !showCallForm && { display: 'none' }]}>
+        <View style={[{ backgroundColor: 'var(--color-surface-light)', padding: 16, borderRadius: 14, marginBottom: 16, borderWidth: 1, borderColor: 'var(--color-border)' }, !showCallForm && { display: 'none' }]}>
           <Text style={{ color: 'var(--color-text-secondary)', fontSize: 13, marginBottom: 8, fontWeight: '600', fontFamily: 'Poppins' }}>Status</Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginBottom: 16 }}>
             {CALL_STATUSES.map(s => (
@@ -371,7 +371,7 @@ export default function AdminLeadDetailPage() {
           <Text style={{ color: 'var(--color-text-secondary)', fontSize: 13, marginBottom: 8, fontWeight: '600', fontFamily: 'Poppins' }}>Notes</Text>
           <TextInput
             style={{
-              backgroundColor: 'rgba(15, 23, 42, 0.5)', color: 'var(--color-text-primary)', borderRadius: 14, padding: 16,
+              backgroundColor: 'var(--color-surface)', color: 'var(--color-text-primary)', borderRadius: 14, padding: 16,
               minHeight: 80, textAlignVertical: 'top', marginBottom: 16, borderWidth: 1, borderColor: 'var(--color-border)', fontFamily: 'Poppins'
             }}
             placeholder="Enter call details..."
@@ -514,7 +514,7 @@ const styles = StyleSheet.create({
   phoneChip: {
     flexDirection: 'row', 
     alignItems: 'center', 
-    backgroundColor: 'rgba(15, 23, 42, 0.5)',
+    backgroundColor: 'var(--color-surface)',
     borderRadius: 16, 
     padding: 16, 
     marginBottom: 12, 
@@ -555,12 +555,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16, 
     paddingVertical: 10, 
     borderRadius: 12, 
-    backgroundColor: 'rgba(15, 23, 42, 0.5)', 
+    backgroundColor: 'var(--color-surface)', 
     marginRight: 8,
     borderWidth: 1,
     borderColor: 'var(--color-border)',
   },
-  stageChipText: { fontSize: 13, fontWeight: '700', fontFamily: 'Poppins' },
+  stageChipText: { fontSize: 13, fontWeight: '700', fontFamily: 'Poppins', color: 'var(--color-text-secondary)' },
   dropdownLabel: { 
     fontSize: 13, 
     color: 'var(--color-text-secondary)', 
@@ -574,7 +574,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16, 
     paddingVertical: 10, 
     borderRadius: 12, 
-    backgroundColor: 'rgba(15, 23, 42, 0.5)', 
+    backgroundColor: 'var(--color-surface)', 
     marginRight: 8,
     borderWidth: 1,
     borderColor: 'var(--color-border)',
@@ -584,7 +584,7 @@ const styles = StyleSheet.create({
     borderColor: 'var(--color-secondary)',
   },
   optionText: { fontSize: 13, color: 'var(--color-text-secondary)', fontWeight: '600', fontFamily: 'Poppins' },
-  optionTextActive: { color: 'var(--color-text-primary)' },
+  optionTextActive: { color: '#ffffff' },
   assignBtn: { 
     backgroundColor: 'var(--color-primary)', 
     borderRadius: 14, 
@@ -599,7 +599,7 @@ const styles = StyleSheet.create({
   assignBtnDisabled: { opacity: 0.6 },
   assignBtnText: { color: '#fff', fontWeight: '700', fontSize: 16, fontFamily: 'Poppins' },
   callCard: { 
-    backgroundColor: 'rgba(15, 23, 42, 0.5)', 
+    backgroundColor: 'var(--color-surface)', 
     borderRadius: 14, 
     padding: 16, 
     marginBottom: 10,
