@@ -96,5 +96,6 @@ export const API_ROUTES = {
   LEADS_IMPORT: '/api/leads/import',
   INSIGHTS: '/api/insights',
   INSIGHTS_CALLS: '/api/insights/calls',
+  INSIGHTS_LEADS: '/api/insights/leads',
   UPLOAD_CALL_PHOTOS: '/api/uploads/call-photos',
 } as const;

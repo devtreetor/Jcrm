@@ -6,6 +6,8 @@ import { useRouter } from 'next/navigation';
 import { API_ROUTES } from '@/lib/constants';
 import { STAGE_LABELS, STAGE_COLORS } from '@/lib/constants';
 import type { InsightsData, InsightsRange } from '@/types/team.types';
+import type { LeadStage } from '@/types/lead.types';
+import InsightLeadsModal from '@/app/components/InsightLeadsModal';
 
 const RANGE_OPTIONS: { label: string; value: InsightsRange }[] = [
   { label: 'Today', value: 'day' },
@@ -54,6 +56,9 @@ export default function AdminDashboard() {
   const [range, setRange] = useState<InsightsRange>('month');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [selectedCard, setSelectedCard] = useState<{
+    label: string; color: string; type: 'stage' | 'calls'; stage?: LeadStage;
+  } | null>(null);
 
   const fetchInsights = useCallback(async (r: InsightsRange) => {
     try {
@@ -82,14 +87,14 @@ export default function AdminDashboard() {
 
   const statCards = insights
     ? [
-        { label: 'Calls', value: insights.total_calls, color: '#1270E3' },
-        { label: 'Demos', value: insights.demos_booked, color: '#E24E59' },
-        { label: 'Mtg Fixed', value: insights.meetings_fixed, color: '#06b6d4' },
-        { label: 'Mtg Done', value: insights.meetings_done, color: '#0ea5e9' },
-        { label: 'Negotiation', value: insights.negotiations, color: '#8b5cf6' },
-        { label: 'Proposal', value: insights.proposals_sent, color: '#a78bfa' },
-        { label: 'Won', value: insights.won, color: '#22c55e' },
-        { label: 'Lost', value: insights.lost, color: '#94a3b8' },
+        { label: 'Calls', value: insights.total_calls, color: '#1270E3', type: 'calls' as const },
+        { label: 'Demos', value: insights.demos_booked, color: '#E24E59', type: 'stage' as const, stage: 'demo_booked' as LeadStage },
+        { label: 'Mtg Fixed', value: insights.meetings_fixed, color: '#06b6d4', type: 'stage' as const, stage: 'meeting_fixed' as LeadStage },
+        { label: 'Mtg Done', value: insights.meetings_done, color: '#0ea5e9', type: 'stage' as const, stage: 'meeting_done' as LeadStage },
+        { label: 'Negotiation', value: insights.negotiations, color: '#8b5cf6', type: 'stage' as const, stage: 'negotiation' as LeadStage },
+        { label: 'Proposal', value: insights.proposals_sent, color: '#a78bfa', type: 'stage' as const, stage: 'proposal_sent' as LeadStage },
+        { label: 'Won', value: insights.won, color: '#22c55e', type: 'stage' as const, stage: 'won' as LeadStage },
+        { label: 'Lost', value: insights.lost, color: '#94a3b8', type: 'stage' as const, stage: 'lost' as LeadStage },
       ]
     : [];
 
@@ -123,13 +128,18 @@ export default function AdminDashboard() {
         <>
           <View style={styles.grid}>
             {statCards.map((card) => (
-              <View key={card.label} style={styles.statCard}>
+              <TouchableOpacity
+                key={card.label}
+                style={styles.statCard}
+                activeOpacity={0.7}
+                onPress={() => setSelectedCard({ label: card.label, color: card.color, type: card.type, stage: card.stage })}
+              >
                  <View style={[styles.statIconBadge, { backgroundColor: `${card.color}22` }]}>
                     <Text style={{ color: card.color }}>●</Text>
                  </View>
                 <Text style={styles.statValue}>{card.value}</Text>
                 <Text style={styles.statLabel}>{card.label}</Text>
-              </View>
+              </TouchableOpacity>
             ))}
           </View>
           
@@ -159,6 +169,17 @@ export default function AdminDashboard() {
           </View>
         </>
       ) : null}
+
+      <InsightLeadsModal
+        visible={!!selectedCard}
+        onClose={() => setSelectedCard(null)}
+        title={selectedCard?.label ?? ''}
+        color={selectedCard?.color ?? '#fff'}
+        type={selectedCard?.type ?? 'stage'}
+        stage={selectedCard?.stage}
+        range={range}
+        rolePrefix="/admin"
+      />
 
       <View style={styles.quickActions}>
         <Text style={styles.sectionTitle}>Quick Actions</Text>

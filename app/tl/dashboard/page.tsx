@@ -5,6 +5,8 @@ import { View, Text, ScrollView, TouchableOpacity, StyleSheet, ActivityIndicator
 import { useRouter } from 'next/navigation';
 import { API_ROUTES, STAGE_LABELS, STAGE_COLORS } from '@/lib/constants';
 import type { InsightsData, InsightsRange } from '@/types/team.types';
+import type { LeadStage } from '@/types/lead.types';
+import InsightLeadsModal from '@/app/components/InsightLeadsModal';
 
 const RANGE_OPTIONS: { label: string; value: InsightsRange }[] = [
   { label: 'Today', value: 'day' },
@@ -18,6 +20,9 @@ export default function TLDashboard() {
   const [range, setRange] = useState<InsightsRange>('month');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [selectedCard, setSelectedCard] = useState<{
+    label: string; color: string; type: 'stage' | 'calls'; stage?: LeadStage;
+  } | null>(null);
 
   const fetchInsights = useCallback(async (r: InsightsRange) => {
     try {
@@ -45,13 +50,13 @@ export default function TLDashboard() {
 
   const statCards = insights
     ? [
-        { label: 'Total Calls', value: insights.total_calls, color: '#a78bfa' },
-        { label: STAGE_LABELS.demo_booked, value: insights.demos_booked, color: STAGE_COLORS.demo_booked },
-        { label: STAGE_LABELS.meeting_fixed, value: insights.meetings_fixed, color: STAGE_COLORS.meeting_fixed },
-        { label: STAGE_LABELS.meeting_done, value: insights.meetings_done, color: STAGE_COLORS.meeting_done },
-        { label: STAGE_LABELS.won, value: insights.won, color: STAGE_COLORS.won },
-        { label: STAGE_LABELS.lost, value: insights.lost, color: STAGE_COLORS.lost },
-        { label: STAGE_LABELS.proposal_sent, value: insights.proposals_sent, color: STAGE_COLORS.proposal_sent },
+        { label: 'Total Calls', value: insights.total_calls, color: '#a78bfa', type: 'calls' as const },
+        { label: STAGE_LABELS.demo_booked, value: insights.demos_booked, color: STAGE_COLORS.demo_booked, type: 'stage' as const, stage: 'demo_booked' as LeadStage },
+        { label: STAGE_LABELS.meeting_fixed, value: insights.meetings_fixed, color: STAGE_COLORS.meeting_fixed, type: 'stage' as const, stage: 'meeting_fixed' as LeadStage },
+        { label: STAGE_LABELS.meeting_done, value: insights.meetings_done, color: STAGE_COLORS.meeting_done, type: 'stage' as const, stage: 'meeting_done' as LeadStage },
+        { label: STAGE_LABELS.won, value: insights.won, color: STAGE_COLORS.won, type: 'stage' as const, stage: 'won' as LeadStage },
+        { label: STAGE_LABELS.lost, value: insights.lost, color: STAGE_COLORS.lost, type: 'stage' as const, stage: 'lost' as LeadStage },
+        { label: STAGE_LABELS.proposal_sent, value: insights.proposals_sent, color: STAGE_COLORS.proposal_sent, type: 'stage' as const, stage: 'proposal_sent' as LeadStage },
       ]
     : [];
 
@@ -82,10 +87,15 @@ export default function TLDashboard() {
       ) : (
         <View style={styles.grid}>
           {statCards.map((card) => (
-            <View key={card.label} style={styles.statCard}>
+            <TouchableOpacity
+              key={card.label}
+              style={styles.statCard}
+              activeOpacity={0.7}
+              onPress={() => setSelectedCard({ label: card.label, color: card.color, type: card.type, stage: card.stage })}
+            >
               <Text style={styles.statValue}>{card.value}</Text>
               <Text style={[styles.statLabel, { color: card.color }]}>{card.label}</Text>
-            </View>
+            </TouchableOpacity>
           ))}
         </View>
       )}
@@ -96,6 +106,17 @@ export default function TLDashboard() {
       >
         <Text style={styles.viewLeadsBtnText}>View Team Leads →</Text>
       </TouchableOpacity>
+
+      <InsightLeadsModal
+        visible={!!selectedCard}
+        onClose={() => setSelectedCard(null)}
+        title={selectedCard?.label ?? ''}
+        color={selectedCard?.color ?? '#fff'}
+        type={selectedCard?.type ?? 'stage'}
+        stage={selectedCard?.stage}
+        range={range}
+        rolePrefix="/tl"
+      />
     </ScrollView>
   );
 }

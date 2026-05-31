@@ -1,7 +1,7 @@
 import { type SupabaseClient } from '@supabase/supabase-js';
 import type { InsightsData, InsightsRange } from '@/types/team.types';
 
-function getDateRange(range: InsightsRange): { start: string; end: string } {
+export function getDateRange(range: InsightsRange): { start: string; end: string } {
   const now = new Date();
   const end = now.toISOString();
   let start: Date;

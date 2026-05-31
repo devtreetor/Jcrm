@@ -7,6 +7,8 @@ import {
 import { useRouter } from 'next/navigation';
 import { API_ROUTES, STAGE_LABELS, STAGE_COLORS } from '@/lib/constants';
 import type { InsightsData, InsightsRange } from '@/types/team.types';
+import type { LeadStage } from '@/types/lead.types';
+import InsightLeadsModal from '@/app/components/InsightLeadsModal';
 
 export default function CallerDashboard() {
   const router = useRouter();
@@ -14,6 +16,9 @@ export default function CallerDashboard() {
   const [range, setRange] = useState<InsightsRange>('month');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [selectedCard, setSelectedCard] = useState<{
+    label: string; color: string; type: 'stage' | 'calls'; stage?: LeadStage;
+  } | null>(null);
 
   const fetchInsights = useCallback(async (r: InsightsRange) => {
     try {
@@ -41,10 +46,10 @@ export default function CallerDashboard() {
 
   const statCards = insights
     ? [
-        { label: 'My Calls', value: insights.total_calls, color: '#22c55e' },
-        { label: STAGE_LABELS.demo_booked, value: insights.demos_booked, color: STAGE_COLORS.demo_booked },
-        { label: STAGE_LABELS.meeting_fixed, value: insights.meetings_fixed, color: STAGE_COLORS.meeting_fixed },
-        { label: STAGE_LABELS.won, value: insights.won, color: STAGE_COLORS.won },
+        { label: 'My Calls', value: insights.total_calls, color: '#22c55e', type: 'calls' as const },
+        { label: STAGE_LABELS.demo_booked, value: insights.demos_booked, color: STAGE_COLORS.demo_booked, type: 'stage' as const, stage: 'demo_booked' as LeadStage },
+        { label: STAGE_LABELS.meeting_fixed, value: insights.meetings_fixed, color: STAGE_COLORS.meeting_fixed, type: 'stage' as const, stage: 'meeting_fixed' as LeadStage },
+        { label: STAGE_LABELS.won, value: insights.won, color: STAGE_COLORS.won, type: 'stage' as const, stage: 'won' as LeadStage },
       ]
     : [];
 
@@ -79,10 +84,15 @@ export default function CallerDashboard() {
       ) : (
         <View style={styles.grid}>
           {statCards.map((card) => (
-            <View key={card.label} style={styles.statCard}>
+            <TouchableOpacity
+              key={card.label}
+              style={styles.statCard}
+              activeOpacity={0.7}
+              onPress={() => setSelectedCard({ label: card.label, color: card.color, type: card.type, stage: card.stage })}
+            >
               <Text style={styles.statValue}>{card.value}</Text>
               <Text style={[styles.statLabel, { color: card.color }]}>{card.label}</Text>
-            </View>
+            </TouchableOpacity>
           ))}
         </View>
       )}
@@ -93,6 +103,17 @@ export default function CallerDashboard() {
       >
         <Text style={styles.viewLeadsBtnText}>View My Leads →</Text>
       </TouchableOpacity>
+
+      <InsightLeadsModal
+        visible={!!selectedCard}
+        onClose={() => setSelectedCard(null)}
+        title={selectedCard?.label ?? ''}
+        color={selectedCard?.color ?? '#fff'}
+        type={selectedCard?.type ?? 'stage'}
+        stage={selectedCard?.stage}
+        range={range}
+        rolePrefix="/caller"
+      />
     </ScrollView>
   );
 }
