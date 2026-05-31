@@ -20,8 +20,48 @@ export default function LoginPage() {
       const root = window.document.documentElement;
       root.classList.remove('theme-dark', 'theme-light', 'theme-brand');
       root.classList.add(`theme-${savedTheme}`);
+
+      const token = localStorage.getItem('token');
+      const storedUser = localStorage.getItem('user');
+
+      if (token && storedUser) {
+        try {
+          const parts = token.split('.');
+          let isExpired = false;
+          if (parts.length === 3) {
+            const payload = JSON.parse(window.atob(parts[1].replace(/-/g, '+').replace(/_/g, '/')));
+            if (payload.exp) {
+              const now = Math.floor(Date.now() / 1000);
+              isExpired = payload.exp < now;
+            }
+          } else {
+            isExpired = true;
+          }
+
+          if (isExpired) {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            document.cookie = 'supabase-auth-token=; path=/; max-age=0';
+          } else {
+            const user = JSON.parse(storedUser);
+            const role = user.role as UserRole;
+            if (role === 'admin') {
+              router.push(ROUTES.ADMIN_DASHBOARD);
+            } else if (role === 'team_lead') {
+              router.push(ROUTES.TL_DASHBOARD);
+            } else {
+              router.push(ROUTES.CALLER_DASHBOARD);
+            }
+          }
+        } catch (e) {
+          console.error('Failed to parse auto-login details:', e);
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+          document.cookie = 'supabase-auth-token=; path=/; max-age=0';
+        }
+      }
     }
-  }, []);
+  }, [router]);
 
   const handleLogin = useCallback(async () => {
     if (!email.trim() || !password.trim()) {
